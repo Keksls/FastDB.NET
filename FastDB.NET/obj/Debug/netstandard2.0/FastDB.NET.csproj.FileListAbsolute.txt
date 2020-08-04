@@ -1,0 +1,8 @@
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET\bin\Debug\netstandard2.0\FastDB.NET.deps.json
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET\bin\Debug\netstandard2.0\FastDB.NET.dll
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET\bin\Debug\netstandard2.0\FastDB.NET.pdb
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET\obj\Debug\netstandard2.0\FastDB.NET.csprojAssemblyReference.cache
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET\obj\Debug\netstandard2.0\FastDB.NET.AssemblyInfoInputs.cache
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET\obj\Debug\netstandard2.0\FastDB.NET.AssemblyInfo.cs
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET\obj\Debug\netstandard2.0\FastDB.NET.dll
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET\obj\Debug\netstandard2.0\FastDB.NET.pdb

@@ -1,0 +1,17 @@
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\bin\Debug\netcoreapp3.1\FastDB.NET_Test.exe
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\bin\Debug\netcoreapp3.1\FastDB.NET_Test.deps.json
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\bin\Debug\netcoreapp3.1\FastDB.NET_Test.runtimeconfig.json
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\bin\Debug\netcoreapp3.1\FastDB.NET_Test.runtimeconfig.dev.json
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\bin\Debug\netcoreapp3.1\FastDB.NET_Test.dll
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\bin\Debug\netcoreapp3.1\FastDB.NET_Test.pdb
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\bin\Debug\netcoreapp3.1\BinaryPack.dll
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\bin\Debug\netcoreapp3.1\FastDB.NET.dll
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\bin\Debug\netcoreapp3.1\FastDB.NET.pdb
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\obj\Debug\netcoreapp3.1\FastDB.NET_Test.csprojAssemblyReference.cache
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\obj\Debug\netcoreapp3.1\FastDB.NET_Test.csproj.CoreCompileInputs.cache
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\obj\Debug\netcoreapp3.1\FastDB.NET_Test.AssemblyInfoInputs.cache
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\obj\Debug\netcoreapp3.1\FastDB.NET_Test.AssemblyInfo.cs
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\obj\Debug\netcoreapp3.1\FastDB.NET_Test.csproj.CopyComplete
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\obj\Debug\netcoreapp3.1\FastDB.NET_Test.dll
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\obj\Debug\netcoreapp3.1\FastDB.NET_Test.pdb
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\obj\Debug\netcoreapp3.1\FastDB.NET_Test.genruntimeconfig.cache

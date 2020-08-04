@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "WdJadJxwcQl0DxzoEd8bKR4mHglb9Rra1fP8BRT+t7ZPw+h5D04VU4R/R6V3rtrjBoe4TQM2FLmuxIueJDspPQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\herme\\source\\repos\\FastDB.NET\\FastDB.NET_Test\\FastDB.NET_Test.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\herme\\.nuget\\packages\\binarypack\\1.0.1\\binarypack.1.0.1.nupkg.sha512",
+    "C:\\Users\\herme\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\4.6.0\\system.runtime.compilerservices.unsafe.4.6.0.nupkg.sha512"
+  ],
+  "logs": []
+}
