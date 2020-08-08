@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastDB.NET", "FastDB.NET\FastDB.NET.csproj", "{F08972BB-9DEF-47E1-9A45-1CEAADB62579}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastDB.NET", "FastDB.NET\FastDB.NET.csproj", "{39CAD585-0F34-4C68-A726-4EA1EEAFA7F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastDB.NET_Test", "FastDB.NET_Test\FastDB.NET_Test.csproj", "{1C97D1C6-94C2-4BB1-BA71-88C1BEDB8B3B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastDB.NET_Test", "FastDB.NET_Test\FastDB.NET_Test.csproj", "{73ABFDFC-D809-47CC-86CD-F9CF256D3B5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastDB.NET_Browser", "FastDB.NET_Browser\FastDB.NET_Browser.csproj", "{9B0B4B63-1C53-4F8A-960B-44E78F92E28A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F08972BB-9DEF-47E1-9A45-1CEAADB62579}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F08972BB-9DEF-47E1-9A45-1CEAADB62579}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F08972BB-9DEF-47E1-9A45-1CEAADB62579}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F08972BB-9DEF-47E1-9A45-1CEAADB62579}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1C97D1C6-94C2-4BB1-BA71-88C1BEDB8B3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1C97D1C6-94C2-4BB1-BA71-88C1BEDB8B3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1C97D1C6-94C2-4BB1-BA71-88C1BEDB8B3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1C97D1C6-94C2-4BB1-BA71-88C1BEDB8B3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39CAD585-0F34-4C68-A726-4EA1EEAFA7F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39CAD585-0F34-4C68-A726-4EA1EEAFA7F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39CAD585-0F34-4C68-A726-4EA1EEAFA7F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39CAD585-0F34-4C68-A726-4EA1EEAFA7F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73ABFDFC-D809-47CC-86CD-F9CF256D3B5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73ABFDFC-D809-47CC-86CD-F9CF256D3B5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73ABFDFC-D809-47CC-86CD-F9CF256D3B5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73ABFDFC-D809-47CC-86CD-F9CF256D3B5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B0B4B63-1C53-4F8A-960B-44E78F92E28A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B0B4B63-1C53-4F8A-960B-44E78F92E28A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B0B4B63-1C53-4F8A-960B-44E78F92E28A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B0B4B63-1C53-4F8A-960B-44E78F92E28A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

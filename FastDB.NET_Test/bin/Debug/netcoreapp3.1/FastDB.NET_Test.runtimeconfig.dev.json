@@ -1,8 +1,0 @@
-{
-  "runtimeOptions": {
-    "additionalProbingPaths": [
-      "C:\\Users\\herme\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\herme\\.nuget\\packages"
-    ]
-  }
-}

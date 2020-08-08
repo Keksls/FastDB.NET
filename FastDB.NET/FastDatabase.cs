@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.ExceptionServices;
 
 namespace FastDB.NET
 {
@@ -9,7 +8,7 @@ namespace FastDB.NET
     {
         public string DatabaseName { get; private set; }
         public string FilePath { get; private set; }
-        public Dictionary<string, Table> Tables { get; set; }
+        public Dictionary<string, Table> Tables { get; private set; }
 
         public FastDatabase(string databaseName, string filePath)
         {
@@ -17,8 +16,6 @@ namespace FastDB.NET
             FilePath = filePath;
             Tables = new Dictionary<string, Table>();
         }
-
-        public FastDatabase() { }
 
         /// <summary>
         /// Open the database binary file and bind this instance from it
@@ -87,13 +84,10 @@ namespace FastDB.NET
         /// <param name="TableName">The name of the table to insert data</param>
         /// <param name="Values">the data values to insert (must match with the table definition's fields)</param>
         /// <returns>true if success, false if table don't exist OR values mismatch the fields</returns>
-        public bool Insert(string TableName, params IComparable[] Values)
+        public void Insert(string TableName, params object[] Values)
         {
-            // check if table exist
-            if (!Tables.ContainsKey(TableName))
-                return false;
             // insert data values
-            return Tables[TableName].Insert(Values);
+            GetTable(TableName).Insert(Values);
         }
 
         /// <summary>
@@ -102,36 +96,28 @@ namespace FastDB.NET
         /// <param name="TableName">The name of the table to insert data</param>
         /// <param name="Values">the data values to insert (must match with the table definition's fields)</param>
         /// <returns>true if success, false if table don't exist OR values mismatch the fields</returns>
-        public bool Insert(string TableName, Dictionary<string, IComparable> Values)
+        public void Insert(string TableName, Dictionary<string, object> Values)
         {
-            // check if table exist
-            if (!Tables.ContainsKey(TableName))
-                return false;
             // insert data values
-            return Tables[TableName].Insert(Values);
+            GetTable(TableName).Insert(Values);
         }
 
-        /// <summary>
-        /// Select some rows b=that match to the condition
-        /// </summary>
-        /// <param name="TableName">The name of the table to insert data</param>
-        /// <param name="FieldName">Field to check</param>
-        /// <param name="Condition">Conditional operator</param>
-        /// <param name="TargetValue">target value to match with</param>
-        /// <returns>a list of all rows that match</returns>
-        public List<Row> Select(string TableName, string FieldName, DBCondition Condition, IComparable TargetValue)
+        #region Serialization
+        internal override int GetSize()
         {
-            // check if table exist
-            if (!Tables.ContainsKey(TableName))
-                throw new TableDontExistExceptions();
-            // select rows
-            return Tables[TableName].Select(FieldName, Condition, TargetValue);
+            return 4; //  nbTables
         }
 
-        public override int GetSize()
+        internal override unsafe void Serialize()
         {
-            return 0;
+            WriteInt(Tables.Count);
         }
+
+        internal override unsafe void Deserialize()
+        {
+            Tables = new Dictionary<string, Table>();
+        }
+        #endregion
     }
 
     public enum FastDBType
@@ -157,5 +143,12 @@ namespace FastDB.NET
         LessOrEqual = 6,
         [Description("<>")]
         NotEqual = 7
+    }
+
+    public enum DBConditionLogical
+    {
+        None = -1,
+        AND = 0,
+        OR = 1
     }
 }

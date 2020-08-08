@@ -1,0 +1,12 @@
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\bin\Debug\FastDB.NET_Browser.exe
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\bin\Debug\FastDB.NET_Browser.pdb
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\bin\Debug\FastDB.NET.dll
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\bin\Debug\FastDB.NET.pdb
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.csprojAssemblyReference.cache
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.Properties.Resources.resources
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.csproj.GenerateResource.cache
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.csproj.CoreCompileInputs.cache
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.csproj.CopyComplete
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.exe
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.pdb
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.Browser.resources

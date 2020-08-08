@@ -23,4 +23,9 @@ namespace FastDB.NET
     {
         public override string Message => "The field you asked don't exist in this table.";
     }
+
+    public class InvalideQueryException : Exception
+    {
+        public override string Message => "The condition you are trying to process in invalide.";
+    }
 }

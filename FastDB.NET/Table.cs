@@ -1,5 +1,7 @@
-﻿using System;
+﻿using FastDB.NET.CRUD;
+using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace FastDB.NET
 {
@@ -7,7 +9,7 @@ namespace FastDB.NET
     {
         public string Name { get; set; }
         public Dictionary<string, Field> Fields { get; set; }
-        public List<Row> Rows { get; set; }
+        public List<Row> Rows;
         public int NbFields { get { return Fields.Count; } }
         public int NbRows { get { return Rows.Count; } }
 
@@ -16,6 +18,13 @@ namespace FastDB.NET
             Name = name;
             Fields = new Dictionary<string, Field>();
             Rows = new List<Row>();
+        }
+
+        private void AddRow(Row row)
+        {
+            Rows.Add(row);
+            //Array.Resize<Row>(ref Rows, NbRows + 1);
+            //Rows[NbRows - 1] = row;
         }
 
         /// <summary>
@@ -32,10 +41,10 @@ namespace FastDB.NET
             if (Fields.ContainsKey(name))
                 throw new FieldAlreadyExistExceptions();
             // insert the field
-            Fields.Add(name, new Field(name, type, defaultValue));
+            Fields.Add(name, new Field(name, type, defaultValue, NbFields));
             // set default values for already existing rows
             foreach (Row row in Rows)
-                row.Cells.Add(name, defaultValue);
+                row.AddField(defaultValue);
             return this;
         }
 
@@ -44,22 +53,13 @@ namespace FastDB.NET
         /// </summary>
         /// <param name="Values">data values to insert</param>
         /// <returns>true if success, false if table don't exist OR values mismatch the fields</returns>
-        public bool Insert(params IComparable[] Values)
+        public bool Insert(params object[] Values)
         {
             // check data length
             if (Values.Length != NbFields)
                 return false;
-            // prepare row
-            Row row = new Row();
-            int index = 0;
-            foreach (var pair in Fields)
-            {
-                // Add to row
-                row.Cells.Add(pair.Key, Values[index]);
-                index++;
-            }
             // insert row
-            Rows.Add(row);
+            AddRow(new Row().SetCells(Values)); ;
             return true;
         }
 
@@ -68,7 +68,7 @@ namespace FastDB.NET
         /// </summary>
         /// <param name="Values">data values to insert</param>
         /// <returns>true if success, false if table don't exist OR values mismatch the fields</returns>
-        public bool Insert(Dictionary<string, IComparable> Values)
+        public bool Insert(Dictionary<string, object> Values)
         {
             // check data length
             if (Values.Count != NbFields)
@@ -76,75 +76,38 @@ namespace FastDB.NET
             // prepare row
             Row row = new Row();
             foreach (var pair in Fields)
-                row.Cells.Add(pair.Key, Values[pair.Key]);
+                row.Set(pair.Value.FieldIndex, Values[pair.Key]);
             // insert row
-            Rows.Add(row);
+            AddRow(row);
             return true;
         }
 
         /// <summary>
-        /// Select some rows b=that match to the condition
+        /// Create a Selector to select some values in this table
         /// </summary>
-        /// <param name="FieldName">Field to check</param>
-        /// <param name="Condition">Conditional operator</param>
-        /// <param name="TargetValue">target value to match with</param>
-        /// <returns>a list of all rows that match</returns>
-        public List<Row> Select(string FieldName, DBCondition Condition, IComparable TargetValue)
+        /// <param name="FieldName">Fields to select</param>
+        public Select Select(params string[] FieldName)
         {
-            if (!Fields.ContainsKey(FieldName))
-                throw new FieldDontExistExceptions();
-            List<Row> rows = new List<Row>();
-            Func<IComparable, bool> condition = GetConditionFunction(Condition, TargetValue);
-            foreach (var row in Rows)
-                if (condition(row.Cells[FieldName]))
-                    rows.Add(row);
-            return rows;
+            return new Select(this, FieldName);
         }
 
-
-        /// <summary>
-        /// Create the Condition Function
-        /// </summary>
-        private Func<IComparable, bool> GetConditionFunction(DBCondition condition, IComparable targetValue)
+        #region Serialization
+        internal override int GetSize()
         {
-            switch (condition)
-            {
-                default:
-                case DBCondition.Equal:
-                    return (Value) => { return Value.CompareTo(targetValue) == 0; };
-
-                case DBCondition.GreaterThan:
-                    return (Value) => { return Value.CompareTo(targetValue) > 0; };
-
-                case DBCondition.LessThan:
-                    return (Value) => { return Value.CompareTo(targetValue) < 0; };
-
-                case DBCondition.GreaterOrEqual:
-                    return (Value) => { return Value.CompareTo(targetValue) >= 0; };
-
-                case DBCondition.LessOrEqual:
-                    return (Value) => { return Value.CompareTo(targetValue) <= 0; };
-
-                case DBCondition.NotEqual:
-                    return (Value) => { return Value.CompareTo(targetValue) != 0; };
-            }
-        }
-
-        public override int GetSize()
-        {
-            int size = 4 + Name.Length * 4; // tableName
+            int size = 4 + Name.Length * 2; // tableName
 
             // Fields
             size += 4;
             foreach (var field in Fields)
             {
-                size += 4 + field.Value.Name.Length * 4; // name
+                size += 4 + field.Value.Name.Length * 2; // name
                 size += 4; // type
+                size += 4; // index
                 // default value
                 switch (field.Value.Type)
                 {
                     case FastDBType.String:
-                        size += 4 + ((string)field.Value.DefaultValue).Length * 4;
+                        size += 4 + ((string)field.Value.DefaultValue).Length * 2;
                         break;
                     case FastDBType.Integer:
                     case FastDBType.Float:
@@ -154,22 +117,24 @@ namespace FastDB.NET
                         size += 1;
                         break;
                     case FastDBType.DateTime:
-                        size += 4 + ((DateTime)field.Value.DefaultValue).ToString().Length * 4;
+                        size += 4 + ((DateTime)field.Value.DefaultValue).ToString().Length * 2;
                         break;
                     default:
                         break;
                 }
             }
 
+            size += 4; // nbRows
+
             // Rows values
-            foreach(var row in Rows)
+            foreach (var row in Rows)
             {
-                foreach(var cell in row.Cells)
+                foreach (var field in Fields)
                 {
-                    switch (Fields[cell.Key].Type)
+                    switch (field.Value.Type)
                     {
                         case FastDBType.String:
-                            size += 4 + ((string)cell.Value).Length * 4;
+                            size += 4 + row.Get<string>(field.Value.FieldIndex).Length * 2;
                             break;
                         case FastDBType.Integer:
                         case FastDBType.Float:
@@ -179,7 +144,7 @@ namespace FastDB.NET
                             size += 1;
                             break;
                         case FastDBType.DateTime:
-                            size += 4 + ((DateTime)cell.Value).ToString().Length * 4;
+                            size += 4 + (row.Get<DateTime>(field.Value.FieldIndex)).ToString().Length * 2;
                             break;
                         default:
                             break;
@@ -190,12 +155,9 @@ namespace FastDB.NET
             return size;
         }
 
-        internal override void Serialize(int* ptr)
+        internal override void Serialize()
         {
-            base.Serialize(ptr);
             // Header
-            int size = GetSize();
-            WriteInt(size);
             WriteInt(Name.Length);
             WriteString(Name);
             // Fields
@@ -205,6 +167,7 @@ namespace FastDB.NET
                 WriteInt(field.Value.Name.Length);
                 WriteString(field.Value.Name);
                 WriteInt((int)field.Value.Type);
+                WriteInt(field.Value.FieldIndex);
                 switch (field.Value.Type)
                 {
                     case FastDBType.String:
@@ -228,26 +191,30 @@ namespace FastDB.NET
                         break;
                 }
             }
+            // NbRows
+            WriteInt(NbRows);
             // Rows
             foreach (var row in Rows)
-                foreach (var cell in row.Cells)
+                foreach (var field in Fields)
                 {
-                    switch (Fields[cell.Key].Type)
+                    switch (field.Value.Type)
                     {
                         case FastDBType.String:
-                            WriteString((string)cell.Value);
+                            WriteInt(row.Get<string>(field.Value.FieldIndex).Length);
+                            WriteString(row.Get<string>(field.Value.FieldIndex));
                             break;
                         case FastDBType.Integer:
-                            WriteInt((int)cell.Value);
+                            WriteInt(row.Get<int>(field.Value.FieldIndex));
                             break;
                         case FastDBType.Float:
-                            WriteFloat((float)cell.Value);
+                            WriteFloat(row.Get<float>(field.Value.FieldIndex));
                             break;
                         case FastDBType.Bool:
-                            WriteBool((bool)cell.Value);
+                            WriteBool(row.Get<bool>(field.Value.FieldIndex));
                             break;
                         case FastDBType.DateTime:
-                            WriteString(((DateTime)cell.Value).ToString());
+                            WriteInt((row.Get<DateTime>(field.Value.FieldIndex)).ToString().Length);
+                            WriteString((row.Get<DateTime>(field.Value.FieldIndex)).ToString());
                             break;
                         default:
                             break;
@@ -255,20 +222,20 @@ namespace FastDB.NET
                 }
         }
 
-        internal override unsafe void Deserialize(int* ptr)
+        internal override unsafe void Deserialize()
         {
-            base.Deserialize(ptr);
-
             // Header
-            int size = ReadInt();
             Name = ReadString(ReadInt());
+
             // Fields
             int nbFields = ReadInt();
-            for(int i = 0; i < nbFields; i++)
+            int i = 0;
+            for (i = 0; i < nbFields; i++)
             {
                 string fieldName = ReadString(ReadInt());
                 FastDBType type = (FastDBType)ReadInt();
-                IComparable defaultValue = default(IComparable);
+                int index = ReadInt();
+                object defaultValue = null;
                 switch (type)
                 {
                     case FastDBType.String:
@@ -287,12 +254,62 @@ namespace FastDB.NET
                         defaultValue = DateTime.Parse(ReadString(ReadInt()));
                         break;
                     default:
-                        defaultValue = default(IComparable);
+                        defaultValue = null;
                         break;
                 }
-                Fields.Add(fieldName, new Field(fieldName, type, defaultValue));
+                Fields.Add(fieldName, new Field(fieldName, type, defaultValue, index));
             }
 
+            // Rows
+            int nbRows = ReadInt();
+            Field[] fields = new Field[nbFields];
+            i = 0;
+            foreach (var field in Fields)
+            {
+                fields[i] = field.Value;
+                i++;
+            }
+
+            int j = 0;
+            for (i = 0; i < nbRows; i++)
+            {
+                Row row = new Row();
+                row.InitializeCells(nbFields);
+                for (j = 0; j < nbFields; j++)
+                {
+                    switch (fields[j].Type)
+                    {
+                        case FastDBType.String:
+                            row.Set(j, ReadString(ReadInt()));
+                            break;
+                        case FastDBType.Integer:
+                            row.Set(j, ReadInt());
+                            break;
+                        case FastDBType.Float:
+                            row.Set(j, Readfloat());
+                            break;
+                        case FastDBType.Bool:
+                            row.Set(j, ReadBool());
+                            break;
+                        case FastDBType.DateTime:
+                            row.Set(j, DateTime.Parse(ReadString(ReadInt())));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                AddRow(row);
+            }
+        }
+        #endregion
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(Name);
+            foreach (var field in Fields)
+                sb.AppendLine(field.Key + " (" + field.Value.Type.ToString() + ") : " + field.Value.DefaultValue.ToString());
+            return sb.ToString();
         }
     }
 }

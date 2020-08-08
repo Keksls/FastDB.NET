@@ -2,16 +2,18 @@
 
 namespace FastDB.NET
 {
-    public class Field
+    public struct Field
     {
         public string Name { get; set; }
         public FastDBType Type { get; set; }
-        public IComparable DefaultValue { get; set; }
+        public object DefaultValue { get; set; }
+        public int FieldIndex { get; set; }
 
-        public Field(string name, FastDBType type, IComparable defaultValue)
+        public Field(string name, FastDBType type, object defaultValue, int fieldIndex)
         {
             Name = name;
             Type = type;
+            FieldIndex = fieldIndex;
             DefaultValue = defaultValue;
             if (DefaultValue == null)
                 switch (type)

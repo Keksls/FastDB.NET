@@ -2,30 +2,33 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Runtime;
 using System.Text;
 
 namespace FastDB.NET
 {
-    internal static class SerializableDatabase
+    internal unsafe static class SerializableDatabase
     {
+        internal static int* bufferPtr;
+
         internal unsafe static void Serialize(FastDatabase db)
         {
             // Getting full size
-            int fullSize = 4;
+            int fullSize = db.GetSize();
             foreach (var table in db.Tables)
                 fullSize += table.Value.GetSize();
             // prepare ptr buffer
             byte[] buffer = new byte[fullSize];
             System.Runtime.InteropServices.GCHandle rawDataHandle = System.Runtime.InteropServices.GCHandle.Alloc(buffer, System.Runtime.InteropServices.GCHandleType.Pinned);
-            int* bufferPtr = (int*)rawDataHandle.AddrOfPinnedObject().ToPointer();
+            bufferPtr = (int*)rawDataHandle.AddrOfPinnedObject().ToPointer();
             // Serialize
-            db.Serialize(bufferPtr);
-            db.WriteInt(db.Tables.Count);
+            db.Serialize();
             foreach (var table in db.Tables)
-                table.Value.Serialize(bufferPtr);
+                table.Value.Serialize();
             // Write buffer
             File.WriteAllBytes(Path.Combine(db.FilePath, db.DatabaseName + ".FastDB"), buffer);
             // Free memory
+            buffer = new byte[0];
             rawDataHandle.Free();
         }
 
@@ -35,101 +38,95 @@ namespace FastDB.NET
             byte[] buffer = File.ReadAllBytes(Path.Combine(db.FilePath, db.DatabaseName + ".FastDB"));
             // prepare ptr buffer
             System.Runtime.InteropServices.GCHandle rawDataHandle = System.Runtime.InteropServices.GCHandle.Alloc(buffer, System.Runtime.InteropServices.GCHandleType.Pinned);
-            int* bufferPtr = (int*)rawDataHandle.AddrOfPinnedObject().ToPointer();
+            bufferPtr = (int*)rawDataHandle.AddrOfPinnedObject().ToPointer();
             // Deserialize
-            db.Deserialize(bufferPtr);
+            db.Deserialize();
             int nbTables = db.ReadInt();
             for (int i = 0; i < nbTables; i++)
             {
                 Table table = new Table("");
-                table.Deserialize(bufferPtr);
+                table.Deserialize();
+                db.Tables.Add(table.Name, table);
             }
             // Free memory
             rawDataHandle.Free();
+            buffer = null;
         }
     }
 
     public unsafe abstract class SerializableBlock
     {
-        private int* bufferPtr;
+        internal abstract int GetSize();
 
-        public abstract int GetSize();
+        internal abstract void Serialize();
 
-        internal virtual void Serialize(int* ptr)
-        {
-            bufferPtr = ptr;
-        }
-
-        internal virtual void Deserialize(int* ptr)
-        {
-            bufferPtr = ptr;
-        }
+        internal abstract void Deserialize();
 
         internal unsafe void WriteString(string Value)
         {
             string v = Value;
             fixed (char* p = v)
             {
-                char* ptr = (char*)bufferPtr;
+                char* ptr = (char*)SerializableDatabase.bufferPtr;
                 for (int i = 0; i < Value.Length; i++)
                 {
                     *(ptr) = *(p + i);
                     ptr++;
                 }
-                bufferPtr = (int*)ptr;
+                SerializableDatabase.bufferPtr = (int*)ptr;
             }
         }
 
         internal unsafe void WriteInt(int value)
         {
-            *(bufferPtr) = value;
-            bufferPtr++;
+            *(SerializableDatabase.bufferPtr) = value;
+            SerializableDatabase.bufferPtr++;
         }
 
         internal unsafe void WriteFloat(float value)
         {
-            (*(float*)(bufferPtr)) = value;
-            bufferPtr++;
+            (*(float*)(SerializableDatabase.bufferPtr)) = value;
+            SerializableDatabase.bufferPtr++;
         }
 
         internal unsafe void WriteBool(bool value)
         {
-            (*(bool*)(bufferPtr)) = value;
-            bool* p = (bool*)bufferPtr;
+            (*(bool*)(SerializableDatabase.bufferPtr)) = value;
+            bool* p = (bool*)SerializableDatabase.bufferPtr;
             p++;
-            bufferPtr = (int*)p;
+            SerializableDatabase.bufferPtr = (int*)p;
         }
 
         internal unsafe int ReadInt()
         {
-            bufferPtr++;
-            return *(bufferPtr - 1);
+            SerializableDatabase.bufferPtr++;
+            return *(SerializableDatabase.bufferPtr - 1);
         }
 
         internal unsafe bool ReadBool()
         {
-            bool* p = (bool*)bufferPtr;
+            bool* p = (bool*)SerializableDatabase.bufferPtr;
             p++;
-            bufferPtr = (int*)p;
+            SerializableDatabase.bufferPtr = (int*)p;
             return *(p - 1);
         }
 
         internal unsafe float Readfloat()
         {
-            bufferPtr++;
-            return (*(float*)(bufferPtr - 1));
+            SerializableDatabase.bufferPtr++;
+            return (*(float*)(SerializableDatabase.bufferPtr - 1));
         }
 
         internal unsafe string ReadString(int size)
         {
             char[] charArray = new char[size];
-            char* p = (char*)bufferPtr;
-            for(int i = 0; i < size; i++)
+            char* p = (char*)SerializableDatabase.bufferPtr;
+            for (int i = 0; i < size; i++)
             {
                 charArray[i] = *(p);
                 p++;
             }
-            bufferPtr = (int*)p;
+            SerializableDatabase.bufferPtr = (int*)p;
             string retVal;
             fixed (char* charPointer = charArray)
             {
