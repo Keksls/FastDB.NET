@@ -31,10 +31,40 @@ namespace FastDB.NET
             Cells[fieldIndex] = value;
         }
 
-        public void AddField(object value)
+        public Row AddField(object value)
         {
-            Array.Resize<object>(ref Cells, Cells.Length);
+            GrowArray();
             Cells[Cells.Length - 1] = value;
+            return this;
+        }
+
+        private void GrowArray(int nbToGrow = 1)
+        {
+            object[] newArray = new object[Cells.Length + nbToGrow];
+            Array.Copy(Cells, newArray, Cells.Length);
+            Cells = newArray;
+        }
+
+        public Row RemoveField(int index)
+        {
+            if (index == Cells.Length - 1)
+                ShrinkArray();
+            else
+            {
+                object lastCell = Cells[Cells.Length - 1];
+                ShrinkArray();
+                for (int i = index; i < Cells.Length; i++)
+                    Cells[i] = Cells[i + 1];
+                Cells[Cells.Length - 1] = lastCell;
+            }
+            return this;
+        }
+
+        private void ShrinkArray(int nbToShrink = 1)
+        {
+            object[] newArray = new object[Cells.Length - nbToShrink];
+            Array.Copy(Cells, newArray, newArray.Length);
+            Cells = newArray;
         }
 
         public Row SetCells(object[] values)

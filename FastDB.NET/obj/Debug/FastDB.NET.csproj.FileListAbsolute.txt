@@ -3,3 +3,4 @@ C:\Users\herme\source\repos\FastDB.NET\FastDB.NET\bin\Debug\FastDB.NET.dll
 C:\Users\herme\source\repos\FastDB.NET\FastDB.NET\bin\Debug\FastDB.NET.pdb
 C:\Users\herme\source\repos\FastDB.NET\FastDB.NET\obj\Debug\FastDB.NET.dll
 C:\Users\herme\source\repos\FastDB.NET\FastDB.NET\obj\Debug\FastDB.NET.pdb
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET\obj\Debug\FastDB.NET.csprojAssemblyReference.cache

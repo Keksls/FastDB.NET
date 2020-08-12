@@ -1,6 +1,7 @@
 ﻿using FastDB.NET.CRUD;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace FastDB.NET
@@ -23,8 +24,6 @@ namespace FastDB.NET
         private void AddRow(Row row)
         {
             Rows.Add(row);
-            //Array.Resize<Row>(ref Rows, NbRows + 1);
-            //Rows[NbRows - 1] = row;
         }
 
         /// <summary>
@@ -32,7 +31,6 @@ namespace FastDB.NET
         /// </summary>
         /// <param name="name">name of the field to add</param>
         /// <param name="type">type of the data it will contains</param>
-        /// <param name="size">the size of this fiels (for string only)</param>
         /// <param name="defaultValue">the value to set by default</param>
         /// <returns>this self instance</returns>
         public Table AddField(string name, FastDBType type, IComparable defaultValue = default(IComparable))
@@ -40,11 +38,55 @@ namespace FastDB.NET
             // check if field already exist
             if (Fields.ContainsKey(name))
                 throw new FieldAlreadyExistExceptions();
+
+            // Determinate strongly typed default value
+            if (defaultValue == default(IComparable))
+            {
+                switch (type)
+                {
+                    default:
+                    case FastDBType.String:
+                        defaultValue = "";
+                        break;
+                    case FastDBType.Integer:
+                        defaultValue = default(int);
+                        break;
+                    case FastDBType.Float:
+                        defaultValue = default(float);
+                        break;
+                    case FastDBType.Bool:
+                        defaultValue = default(bool);
+                        break;
+                    case FastDBType.DateTime:
+                        defaultValue = default(DateTime);
+                        break;
+                }
+            }
+
             // insert the field
             Fields.Add(name, new Field(name, type, defaultValue, NbFields));
             // set default values for already existing rows
-            foreach (Row row in Rows)
-                row.AddField(defaultValue);
+            for (int i = 0; i < NbRows; i++)
+                Rows[i] = new Row().SetCells(Rows[i].AddField(defaultValue).GetCells());
+            return this;
+        }
+
+        /// <summary>
+        /// Remove a field to this table
+        /// </summary>
+        /// <param name="name">name of the field to remove</param>
+        /// <returns>this self instance</returns>
+        public Table RemoveField(string name)
+        {
+            // check if field exist
+            if (!Fields.ContainsKey(name))
+                throw new FieldDontExistExceptions();
+            // Remove from fields list
+            int index = Fields[name].FieldIndex;
+            Fields.Remove(name);
+            // remove from rows
+            for (int i = 0; i < NbRows; i++)
+                Rows[i] = new Row().SetCells(Rows[i].RemoveField(index).GetCells());
             return this;
         }
 
@@ -58,13 +100,29 @@ namespace FastDB.NET
             // check data length
             if (Values.Length != NbFields)
                 return false;
+            // prepare row
+            Row row = new Row();
+            row.InitializeCells(NbFields);
+            foreach (var pair in Fields)
+                row.Set(pair.Value.FieldIndex, Values[pair.Value.FieldIndex] == null ? pair.Value.DefaultValue : Values[pair.Value.FieldIndex]);
             // insert row
-            AddRow(new Row().SetCells(Values)); ;
+            AddRow(row);
             return true;
         }
 
         /// <summary>
-        /// Insert some data to this table
+        /// Insert some data to this table. don't check for null or default values. use it if you are sure of your datas. faster but unsafe
+        /// </summary>
+        /// <param name="Values">data values to insert</param>
+        /// <returns>true if success, false if table don't exist OR values mismatch the fields</returns>
+        public bool UnsafeInsert(params object[] Values)
+        {
+            AddRow(new Row().SetCells(Values));
+            return true;
+        }
+
+        /// <summary>
+        /// Insert some data into this table
         /// </summary>
         /// <param name="Values">data values to insert</param>
         /// <returns>true if success, false if table don't exist OR values mismatch the fields</returns>
@@ -75,8 +133,9 @@ namespace FastDB.NET
                 return false;
             // prepare row
             Row row = new Row();
+            row.InitializeCells(NbFields);
             foreach (var pair in Fields)
-                row.Set(pair.Value.FieldIndex, Values[pair.Key]);
+                row.Set(pair.Value.FieldIndex, Values[pair.Key] == null ? pair.Value.DefaultValue : Values[pair.Key]);
             // insert row
             AddRow(row);
             return true;
@@ -310,6 +369,11 @@ namespace FastDB.NET
             foreach (var field in Fields)
                 sb.AppendLine(field.Key + " (" + field.Value.Type.ToString() + ") : " + field.Value.DefaultValue.ToString());
             return sb.ToString();
+        }
+
+        public void Insert(object select)
+        {
+            throw new NotImplementedException();
         }
     }
 }

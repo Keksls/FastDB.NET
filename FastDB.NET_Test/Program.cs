@@ -82,7 +82,7 @@ namespace FastDB.NET_Test
             mytable.AddField("Age", FastDBType.Integer);
 
             // Insert some data
-            for (int i = 0; i < 1000000; i++)
+            for (int i = 0; i < 100000; i++)
             {
                 Database.Insert(mytable.Name, "Leonard", 31);
                 Database.Insert(mytable.Name, "Penny", 30);
@@ -100,7 +100,7 @@ namespace FastDB.NET_Test
             mytable.AddField("Date", FastDBType.DateTime);
 
             // Insert some data
-            for (int i = 0; i < 1000000; i++)
+            for (int i = 0; i < 100000; i++)
             {
                 Database.Insert(mytable.Name, "Wine", DateTime.Now);
                 Database.Insert(mytable.Name, "Teremine", DateTime.Now);

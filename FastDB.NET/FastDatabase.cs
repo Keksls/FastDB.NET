@@ -50,6 +50,20 @@ namespace FastDB.NET
         }
 
         /// <summary>
+        /// Remove a table from this table
+        /// </summary>
+        /// <param name="Name">the name of the table to remove</param>
+        /// <returns>this instance of FastDatabase</returns>
+        public FastDatabase RemoveTable(string Name)
+        {
+            if (!Tables.ContainsKey(Name))
+                throw new TableDontExistExceptions();
+            Tables.Remove(Name);
+            GC.Collect();
+            return this;
+        }
+
+        /// <summary>
         /// Create a new table to this database
         /// </summary>
         /// <param name="Name">Name of the Table to create</param>

@@ -10,3 +10,4 @@ C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_B
 C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.exe
 C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.pdb
 C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.Browser.resources
+C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.Create_Table.resources

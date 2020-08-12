@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>iconfinder_Database_2_40095.ico</ApplicationIcon>
+    <ApplicationIcon>Database-01.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -52,10 +52,19 @@
     <Compile Include="Browser.Designer.cs">
       <DependentUpon>Browser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Create Table.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Create Table.Designer.cs">
+      <DependentUpon>Create Table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Browser.resx">
       <DependentUpon>Browser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Create Table.resx">
+      <DependentUpon>Create Table.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -87,7 +96,30 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Database-01.ico" />
     <Content Include="iconfinder_Database_2_40095.ico" />
+    <None Include="Resources\Button Refresh-01.png" />
+    <None Include="Resources\Button First-01.png" />
+    <None Include="Resources\Button Forward-01.png" />
+    <None Include="Resources\Button Rewind-01.png" />
+    <None Include="Resources\Button Last-01.png" />
+    <None Include="Resources\Database-01.png" />
+    <None Include="Resources\Button Info-01.png" />
+    <None Include="Resources\Help-01.png" />
+    <None Include="Resources\Drive Generic-01.png" />
+    <None Include="Resources\Button Remove-01.png" />
+    <None Include="Resources\Button Turn Off-01.png" />
+    <None Include="Resources\iconfinder_database_close_36899.png" />
+    <None Include="Resources\Database Add-01.png" />
+    <None Include="Resources\Database Download Data-01.png" />
+    <None Include="Resources\databasecrxpop5.png" />
+    <None Include="Resources\iconfinder_table-edit_44399.png" />
+    <None Include="Resources\iconfinder_table-delete_60042.png" />
+    <None Include="Resources\iconfinder_table-add_84936.png" />
+    <None Include="Resources\iconfinder_Database_copy_Amazon_SimpleDB_Domain_259313.png" />
+    <None Include="Resources\iconfinder_logout_close_sign_out_exit_access_3994382.png" />
+    <None Include="Resources\iconfinder_floppy_285657.png" />
+    <None Include="Resources\iconfinder_Database_copy_DynamoDB_Table_259307.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

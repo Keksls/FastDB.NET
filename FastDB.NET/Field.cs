@@ -37,5 +37,10 @@ namespace FastDB.NET
                         break;
                 }
         }
+
+        public override string ToString()
+        {
+            return Name + " (" + Type + ") - [" + DefaultValue + "]";
+        }
     }
 }
