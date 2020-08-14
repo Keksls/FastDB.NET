@@ -14,5 +14,15 @@ A Browser is also available for creating and editing your databases.
     *2) Save a Database*<br/>
  `database.Save();`<br/><br/>
     *3) Load a saved Database*<br/>
- `FastDatabase database = new FastDatabase("DatabaseName", "FolderPath");`<br/>
- `database.Open()`<br/>
+ ```
+FastDatabase database = new FastDatabase("DatabaseName", "FolderPath");
+ database.Open()
+```
+<br/>
+    *) Create a Table*<br/>
+```
+ Database.CreateTable("TBBT_Persos");
+ Table mytable = Database.GetTable("TBBT_Persos");
+ mytable.AddField("Name", FastDBType.String);
+ mytable.AddField("Age", FastDBType.Integer);
+```
