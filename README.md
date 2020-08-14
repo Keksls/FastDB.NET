@@ -44,4 +44,24 @@ Update Statement
 ```
 mytableUpdate().Where("Name", DBCondition.Equal, "Penny").Set("Age", 60).Execute();
 ```
-
+Delete Statement
+```
+mytable.Delete().Where("Name", DBCondition.Equal, "Loenard").Execute();
+```
+Lock Database
+```
+database.Lock("password");
+```
+Unlock Database
+```
+database.UnLock("password");
+```
+Enable or disable AutoSave
+```
+database.AutoSave = true;
+```
+note that autosave will save the database in a background thread when an edition is performed on the database. 
+very efficient on small and medium database, a little more costly on huge databases.
+For a better handle on your database saving, you can disable autosave and save by your own.
+Auto save is serialized in the database binary file, so it will be saved too.
+by default, autosave is disabled.
