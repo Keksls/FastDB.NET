@@ -9,10 +9,10 @@ You can Lock a database with a password and the binary file will be Encrypted.
 A Browser is also available for creating and editing your databases.
 
 **How to use FastDB.NET**<br/>
-    1) Create a Database instance
+    *1) Create a Database instance*<br/>
  `FastDatabase database = new FastDatabase("DatabaseName", "FolderPath");`
 
-    2) Save a Database
+    *2) Save a Database*<br/>
  `database.Save();`
 
     1) Load a saved Database
