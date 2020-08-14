@@ -10,11 +10,9 @@ A Browser is also available for creating and editing your databases.
 
 **How to use FastDB.NET**<br/><br/>
     *1) Create a Database instance*<br/>
- `FastDatabase database = new FastDatabase("DatabaseName", "FolderPath");`<br/>
- 
+ `FastDatabase database = new FastDatabase("DatabaseName", "FolderPath");`<br/><br/>
     *2) Save a Database*<br/>
- `database.Save();`<br/>
- 
+ `database.Save();`<br/><br/>
     *3) Load a saved Database*<br/>
  `FastDatabase database = new FastDatabase("DatabaseName", "FolderPath");`<br/>
  `database.Open()`<br/>
