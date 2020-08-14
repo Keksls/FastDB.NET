@@ -29,4 +29,19 @@ Create a Table
  Table mytable = Database.GetTable("TBBT_Persos");
  mytable.AddField("Name", FastDBType.String);
  mytable.AddField("Age", FastDBType.Integer);
+ mytable.AddField("Size", FastDBType.Float);
 ```
+Insert Rows
+```
+ mytable.Insert("Leonard", 31, 1.68f);
+ mytable.Insert("Penny", 30, 1.73f);
+```
+Select Statement
+```
+mytable.Select("Age", "Size").Where("Name", DBCondition.Equal, "Penny").Execute();
+```
+Update Statement
+```
+mytableUpdate().Where("Name", DBCondition.Equal, "Penny").Set("Age", 60).Execute();
+```
+
