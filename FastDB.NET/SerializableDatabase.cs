@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -83,6 +84,12 @@ namespace FastDB.NET
             SerializableDatabase.bufferPtr++;
         }
 
+        internal unsafe void WriteUInt(uint value)
+        {
+            (*(uint*)(SerializableDatabase.bufferPtr)) = value;
+            SerializableDatabase.bufferPtr++;
+        }
+
         internal unsafe void WriteFloat(float value)
         {
             (*(float*)(SerializableDatabase.bufferPtr)) = value;
@@ -97,10 +104,34 @@ namespace FastDB.NET
             SerializableDatabase.bufferPtr = (int*)p;
         }
 
+        internal unsafe void WriteByteArray(byte[] bits)
+        {
+            byte* p = (byte*)SerializableDatabase.bufferPtr;
+            for (int i = 0; i < bits.Length; i++, p++)
+                *(p) = bits[i];
+            SerializableDatabase.bufferPtr = (int*)p;
+        }
+
+        internal unsafe byte[] ReadByteArray(int size)
+        {
+            byte* p = (byte*)SerializableDatabase.bufferPtr;
+            byte[] retVal = new byte[size];
+            for (int i = 0; i < size; i++, p++)
+                retVal[i] = *(p);
+            SerializableDatabase.bufferPtr = (int*)p;
+            return retVal;
+        }
+
         internal unsafe int ReadInt()
         {
             SerializableDatabase.bufferPtr++;
             return *(SerializableDatabase.bufferPtr - 1);
+        }
+
+        internal unsafe uint ReadUInt()
+        {
+            SerializableDatabase.bufferPtr++;
+            return (*(uint*)(SerializableDatabase.bufferPtr - 1));
         }
 
         internal unsafe bool ReadBool()
@@ -127,12 +158,7 @@ namespace FastDB.NET
                 p++;
             }
             SerializableDatabase.bufferPtr = (int*)p;
-            string retVal;
-            fixed (char* charPointer = charArray)
-            {
-                retVal = new string(charPointer);
-            }
-            return retVal;
+            return new string(charArray);
         }
     }
 }

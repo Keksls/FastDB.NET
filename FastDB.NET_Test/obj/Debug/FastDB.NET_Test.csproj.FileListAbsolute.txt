@@ -7,3 +7,11 @@ C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\obj\Debug\FastDB.NET_Test
 C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\obj\Debug\FastDB.NET_Test.csproj.CopyComplete
 C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\obj\Debug\FastDB.NET_Test.exe
 C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Test\obj\Debug\FastDB.NET_Test.pdb
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Test\bin\Debug\FastDB.NET_Test.exe
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Test\bin\Debug\FastDB.NET_Test.pdb
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Test\bin\Debug\FastDB.NET.dll
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Test\bin\Debug\FastDB.NET.pdb
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Test\obj\Debug\FastDB.NET_Test.csprojResolveAssemblyReference.cache
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Test\obj\Debug\FastDB.NET_Test.csproj.CoreCompileInputs.cache
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Test\obj\Debug\FastDB.NET_Test.exe
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Test\obj\Debug\FastDB.NET_Test.pdb

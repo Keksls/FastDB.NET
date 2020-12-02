@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 
 namespace FastDB.NET
 {
@@ -116,6 +117,26 @@ namespace FastDB.NET
             GetTable(TableName).Insert(Values);
         }
 
+        /// <summary>
+        /// Did this database Exist ?
+        /// </summary>
+        /// <returns></returns>
+        public bool Exists()
+        {
+            return File.Exists(Path.Combine(FilePath, DatabaseName + ".FastDB"));
+        }
+
+        /// <summary>
+        /// Close this DB
+        /// </summary>
+        public void Close()
+        {
+            Tables.Clear();
+            Tables = null;
+            DatabaseName = null;
+            FilePath = null;
+        }
+
         #region Serialization
         internal override int GetSize()
         {
@@ -133,36 +154,41 @@ namespace FastDB.NET
         }
         #endregion
     }
+}
 
-    public enum FastDBType
-    {
-        String = 0,
-        Integer = 1,
-        Float = 2,
-        Bool = 3,
-        DateTime = 4
-    }
+public enum FastDBType
+{
+    Null = 0,
+    String = 1,
+    Integer = 2,
+    Float = 3,
+    Bool = 4,
+    Date = 5,
+    DateTime = 6,
+    UnsignedInteger = 7
+}
 
-    public enum DBCondition
-    {
-        [Description(">")]
-        GreaterThan = 0,
-        [Description("=")]
-        Equal = 1,
-        [Description("<")]
-        LessThan = 2,
-        [Description(">=")]
-        GreaterOrEqual = 5,
-        [Description("<=")]
-        LessOrEqual = 6,
-        [Description("<>")]
-        NotEqual = 7
-    }
+public enum DBCondition
+{
+    [Description(">")]
+    GreaterThan = 0,
+    [Description("=")]
+    Equal = 1,
+    [Description("<")]
+    LessThan = 2,
+    [Description(">=")]
+    GreaterOrEqual = 5,
+    [Description("<=")]
+    LessOrEqual = 6,
+    [Description("<>")]
+    NotEqual = 7,
+    [Description("IN")]
+    IN = 8
+}
 
-    public enum DBConditionLogical
-    {
-        None = -1,
-        AND = 0,
-        OR = 1
-    }
+public enum DBConditionLogical
+{
+    None = -1,
+    AND = 0,
+    OR = 1
 }

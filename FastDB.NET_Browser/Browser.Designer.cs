@@ -52,6 +52,7 @@
             this.bnCreateTable = new System.Windows.Forms.Button();
             this.btnDeleteTable = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.rtbCellData = new System.Windows.Forms.RichTextBox();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.btnLastPage = new System.Windows.Forms.Button();
             this.btnFirstPage = new System.Windows.Forms.Button();
@@ -93,7 +94,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(860, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(932, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -170,7 +171,7 @@
             this.menuCreateTable.Enabled = false;
             this.menuCreateTable.Image = global::FastDB.NET_Browser.Properties.Resources.iconfinder_table_add_84936;
             this.menuCreateTable.Name = "menuCreateTable";
-            this.menuCreateTable.Size = new System.Drawing.Size(138, 22);
+            this.menuCreateTable.Size = new System.Drawing.Size(140, 22);
             this.menuCreateTable.Text = "Create Table";
             this.menuCreateTable.Click += new System.EventHandler(this.createTableToolStripMenuItem_Click);
             // 
@@ -211,7 +212,7 @@
             this.tabs.Location = new System.Drawing.Point(0, 69);
             this.tabs.Name = "tabs";
             this.tabs.SelectedIndex = 0;
-            this.tabs.Size = new System.Drawing.Size(860, 445);
+            this.tabs.Size = new System.Drawing.Size(932, 512);
             this.tabs.TabIndex = 1;
             // 
             // tabPage2
@@ -224,7 +225,7 @@
             this.tabPage2.ImageIndex = 0;
             this.tabPage2.Location = new System.Drawing.Point(4, 24);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Size = new System.Drawing.Size(852, 417);
+            this.tabPage2.Size = new System.Drawing.Size(924, 484);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Database Definition";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -316,6 +317,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.rtbCellData);
             this.tabPage1.Controls.Add(this.btnRefresh);
             this.tabPage1.Controls.Add(this.btnLastPage);
             this.tabPage1.Controls.Add(this.btnFirstPage);
@@ -330,10 +332,20 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 24);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(852, 417);
+            this.tabPage1.Size = new System.Drawing.Size(924, 484);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Tables Data";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // rtbCellData
+            // 
+            this.rtbCellData.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbCellData.Location = new System.Drawing.Point(570, 35);
+            this.rtbCellData.Name = "rtbCellData";
+            this.rtbCellData.Size = new System.Drawing.Size(348, 440);
+            this.rtbCellData.TabIndex = 10;
+            this.rtbCellData.Text = "";
             // 
             // btnRefresh
             // 
@@ -378,7 +390,7 @@
             // 
             this.lbNbRows.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lbNbRows.AutoSize = true;
-            this.lbNbRows.Location = new System.Drawing.Point(752, 10);
+            this.lbNbRows.Location = new System.Drawing.Point(824, 10);
             this.lbNbRows.Name = "lbNbRows";
             this.lbNbRows.Size = new System.Drawing.Size(66, 15);
             this.lbNbRows.TabIndex = 6;
@@ -426,7 +438,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 11);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(34, 15);
+            this.label1.Size = new System.Drawing.Size(36, 15);
             this.label1.TabIndex = 2;
             this.label1.Text = "Table";
             // 
@@ -448,9 +460,10 @@
             this.dataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGrid.Location = new System.Drawing.Point(3, 35);
             this.dataGrid.Name = "dataGrid";
-            this.dataGrid.Size = new System.Drawing.Size(846, 379);
+            this.dataGrid.Size = new System.Drawing.Size(560, 446);
             this.dataGrid.TabIndex = 0;
             this.dataGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellEndEdit);
+            this.dataGrid.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGrid_CellMouseClick);
             this.dataGrid.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellValidated);
             this.dataGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGrid_RowsRemoved);
             // 
@@ -460,7 +473,7 @@
             this.tabPage4.ImageIndex = 6;
             this.tabPage4.Location = new System.Drawing.Point(4, 24);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(852, 417);
+            this.tabPage4.Size = new System.Drawing.Size(924, 484);
             this.tabPage4.TabIndex = 2;
             this.tabPage4.Text = "Query Execution";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -525,7 +538,7 @@
             this.panel1.Controls.Add(this.progressBar1);
             this.panel1.Location = new System.Drawing.Point(0, 27);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(860, 487);
+            this.panel1.Size = new System.Drawing.Size(932, 554);
             this.panel1.TabIndex = 6;
             // 
             // label4
@@ -533,18 +546,18 @@
             this.label4.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(389, 166);
+            this.label4.Location = new System.Drawing.Point(425, 200);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(162, 21);
+            this.label4.Size = new System.Drawing.Size(163, 21);
             this.label4.TabIndex = 1;
             this.label4.Text = "Working, please wait...";
             // 
             // progressBar1
             // 
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(93, 275);
+            this.progressBar1.Location = new System.Drawing.Point(93, 309);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(744, 23);
+            this.progressBar1.Size = new System.Drawing.Size(816, 23);
             this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.progressBar1.TabIndex = 0;
             // 
@@ -613,7 +626,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(860, 513);
+            this.ClientSize = new System.Drawing.Size(932, 580);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnOpenDatabase);
             this.Controls.Add(this.btnCreateDatabase);
@@ -625,6 +638,7 @@
             this.MinimumSize = new System.Drawing.Size(800, 423);
             this.Name = "Browser";
             this.Text = "FastDB.NET Browser";
+            this.Load += new System.EventHandler(this.Browser_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tabs.ResumeLayout(false);
@@ -688,6 +702,7 @@
         private System.Windows.Forms.Button btnFirstPage;
         private System.Windows.Forms.Button btnLastPage;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.RichTextBox rtbCellData;
     }
 }
 

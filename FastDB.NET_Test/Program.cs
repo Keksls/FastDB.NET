@@ -16,7 +16,6 @@ namespace FastDB.NET_Test
             CreateDatabase();
             LoadDatabase();
             TestSelect();
-
             Console.ReadKey();
         }
 
@@ -55,7 +54,7 @@ namespace FastDB.NET_Test
             Console.Write("Preparing SELECT Statement : ");
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            Select selector = Database.GetTable("TBBT_Persos").Select("Name", "Age").Where("Name", DBCondition.Equal, "Penny");
+            Select selector = Database.GetTable("TBBT_Persos").GetSelector("Name", "Age").Where("Name", DBCondition.Equal, "Penny");
             sw.Stop();
             Console.WriteLine(sw.ElapsedMilliseconds + " ms");
             sw.Reset();

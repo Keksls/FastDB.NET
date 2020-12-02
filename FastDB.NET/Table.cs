@@ -1,5 +1,6 @@
 ﻿using FastDB.NET.CRUD;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace FastDB.NET
         public string Name { get; set; }
         public Dictionary<string, Field> Fields { get; set; }
         public List<Row> Rows;
+        private byte[] nulls;
         public int NbFields { get { return Fields.Count; } }
         public int NbRows { get { return Rows.Count; } }
 
@@ -51,12 +53,16 @@ namespace FastDB.NET
                     case FastDBType.Integer:
                         defaultValue = default(int);
                         break;
+                    case FastDBType.UnsignedInteger:
+                        defaultValue = default(uint);
+                        break;
                     case FastDBType.Float:
                         defaultValue = default(float);
                         break;
                     case FastDBType.Bool:
                         defaultValue = default(bool);
                         break;
+                    case FastDBType.Date:
                     case FastDBType.DateTime:
                         defaultValue = default(DateTime);
                         break;
@@ -67,7 +73,7 @@ namespace FastDB.NET
             Fields.Add(name, new Field(name, type, defaultValue, NbFields));
             // set default values for already existing rows
             for (int i = 0; i < NbRows; i++)
-                Rows[i] = new Row().SetCells(Rows[i].AddField(defaultValue).GetCells());
+                Rows[i] = new Row(this).SetCells(Rows[i].AddField(defaultValue).GetCells());
             return this;
         }
 
@@ -86,7 +92,7 @@ namespace FastDB.NET
             Fields.Remove(name);
             // remove from rows
             for (int i = 0; i < NbRows; i++)
-                Rows[i] = new Row().SetCells(Rows[i].RemoveField(index).GetCells());
+                Rows[i] = new Row(this).SetCells(Rows[i].RemoveField(index).GetCells());
             return this;
         }
 
@@ -101,7 +107,7 @@ namespace FastDB.NET
             if (Values.Length != NbFields)
                 return false;
             // prepare row
-            Row row = new Row();
+            Row row = new Row(this);
             row.InitializeCells(NbFields);
             foreach (var pair in Fields)
                 row.Set(pair.Value.FieldIndex, Values[pair.Value.FieldIndex] == null ? pair.Value.DefaultValue : Values[pair.Value.FieldIndex]);
@@ -117,7 +123,7 @@ namespace FastDB.NET
         /// <returns>true if success, false if table don't exist OR values mismatch the fields</returns>
         public bool UnsafeInsert(params object[] Values)
         {
-            AddRow(new Row().SetCells(Values));
+            AddRow(new Row(this).SetCells(Values));
             return true;
         }
 
@@ -132,7 +138,7 @@ namespace FastDB.NET
             if (Values.Count != NbFields)
                 return false;
             // prepare row
-            Row row = new Row();
+            Row row = new Row(this);
             row.InitializeCells(NbFields);
             foreach (var pair in Fields)
                 row.Set(pair.Value.FieldIndex, Values[pair.Key] == null ? pair.Value.DefaultValue : Values[pair.Key]);
@@ -145,9 +151,23 @@ namespace FastDB.NET
         /// Create a Selector to select some values in this table
         /// </summary>
         /// <param name="FieldName">Fields to select</param>
-        public Select Select(params string[] FieldName)
+        public Select GetSelector(params string[] FieldName)
         {
             return new Select(this, FieldName);
+        }
+
+        /// <summary>
+        /// Create a Selector to select some values in this table
+        /// </summary>
+        /// <param name="FieldName">Fields to select</param>
+        public Select GetSelectorAllFields()
+        {
+            return new Select(this, Fields.Keys.ToArray());
+        }
+
+        public bool isNull(int RowIndex, int fieldIndex)
+        {
+            return nulls[RowIndex * NbFields + fieldIndex] == 1;
         }
 
         #region Serialization
@@ -173,8 +193,9 @@ namespace FastDB.NET
                         size += 4;
                         break;
                     case FastDBType.Bool:
-                        size += 1;
+                        size += 4;
                         break;
+                    case FastDBType.Date:
                     case FastDBType.DateTime:
                         size += 4 + ((DateTime)field.Value.DefaultValue).ToString().Length * 2;
                         break;
@@ -184,33 +205,47 @@ namespace FastDB.NET
             }
 
             size += 4; // nbRows
+            // nulls
+            size += Rows.Count * NbFields;
 
             // Rows values
+            int i = 0;
+            nulls = new byte[Rows.Count * NbFields];
             foreach (var row in Rows)
             {
-                foreach (var field in Fields)
+                foreach (var field in Fields.Values)
                 {
-                    switch (field.Value.Type)
+                    if (row.isNull(field.FieldIndex))
                     {
-                        case FastDBType.String:
-                            size += 4 + row.Get<string>(field.Value.FieldIndex).Length * 2;
-                            break;
-                        case FastDBType.Integer:
-                        case FastDBType.Float:
-                            size += 4;
-                            break;
-                        case FastDBType.Bool:
-                            size += 1;
-                            break;
-                        case FastDBType.DateTime:
-                            size += 4 + (row.Get<DateTime>(field.Value.FieldIndex)).ToString().Length * 2;
-                            break;
-                        default:
-                            break;
+                        nulls[i] = 1;
                     }
+                    else
+                    {
+                        nulls[i] = 0;
+                        switch (field.Type)
+                        {
+                            case FastDBType.String:
+                                size += 4 + row.Get<string>(field.FieldIndex).Length * 2;
+                                break;
+                            case FastDBType.UnsignedInteger:
+                            case FastDBType.Integer:
+                            case FastDBType.Float:
+                                size += 4;
+                                break;
+                            case FastDBType.Bool:
+                                size += 4;
+                                break;
+                            case FastDBType.Date:
+                            case FastDBType.DateTime:
+                                size += 4 + (row.Get<DateTime>(field.FieldIndex)).ToString().Length * 2;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    i++;
                 }
             }
-
             return size;
         }
 
@@ -236,12 +271,16 @@ namespace FastDB.NET
                     case FastDBType.Integer:
                         WriteInt((int)field.Value.DefaultValue);
                         break;
+                    case FastDBType.UnsignedInteger:
+                        WriteUInt((uint)field.Value.DefaultValue);
+                        break;
                     case FastDBType.Float:
                         WriteFloat((float)field.Value.DefaultValue);
                         break;
                     case FastDBType.Bool:
                         WriteBool((bool)field.Value.DefaultValue);
                         break;
+                    case FastDBType.Date:
                     case FastDBType.DateTime:
                         WriteInt((((DateTime)field.Value.DefaultValue).ToString()).Length);
                         WriteString(((DateTime)field.Value.DefaultValue).ToString());
@@ -252,32 +291,41 @@ namespace FastDB.NET
             }
             // NbRows
             WriteInt(NbRows);
+            // Write null cells
+            WriteByteArray(nulls);
             // Rows
+            int i = 0;
             foreach (var row in Rows)
-                foreach (var field in Fields)
+                foreach (var field in Fields.Values)
                 {
-                    switch (field.Value.Type)
-                    {
-                        case FastDBType.String:
-                            WriteInt(row.Get<string>(field.Value.FieldIndex).Length);
-                            WriteString(row.Get<string>(field.Value.FieldIndex));
-                            break;
-                        case FastDBType.Integer:
-                            WriteInt(row.Get<int>(field.Value.FieldIndex));
-                            break;
-                        case FastDBType.Float:
-                            WriteFloat(row.Get<float>(field.Value.FieldIndex));
-                            break;
-                        case FastDBType.Bool:
-                            WriteBool(row.Get<bool>(field.Value.FieldIndex));
-                            break;
-                        case FastDBType.DateTime:
-                            WriteInt((row.Get<DateTime>(field.Value.FieldIndex)).ToString().Length);
-                            WriteString((row.Get<DateTime>(field.Value.FieldIndex)).ToString());
-                            break;
-                        default:
-                            break;
-                    }
+                    if (!row.isNull(field.FieldIndex))
+                        switch (field.Type)
+                        {
+                            case FastDBType.String:
+                                WriteInt(row.Get<string>(field.FieldIndex).Length);
+                                WriteString(row.Get<string>(field.FieldIndex));
+                                break;
+                            case FastDBType.Integer:
+                                WriteInt(row.Get<int>(field.FieldIndex));
+                                break;
+                            case FastDBType.UnsignedInteger:
+                                WriteUInt(row.Get<uint>(field.FieldIndex));
+                                break;
+                            case FastDBType.Float:
+                                WriteFloat(row.Get<float>(field.FieldIndex));
+                                break;
+                            case FastDBType.Bool:
+                                WriteBool(row.Get<bool>(field.FieldIndex));
+                                break;
+                            case FastDBType.Date:
+                            case FastDBType.DateTime:
+                                WriteInt((row.Get<DateTime>(field.FieldIndex)).ToString().Length);
+                                WriteString((row.Get<DateTime>(field.FieldIndex)).ToString());
+                                break;
+                            default:
+                                break;
+                        }
+                    i++;
                 }
         }
 
@@ -303,12 +351,16 @@ namespace FastDB.NET
                     case FastDBType.Integer:
                         defaultValue = ReadInt();
                         break;
+                    case FastDBType.UnsignedInteger:
+                        defaultValue = ReadUInt();
+                        break;
                     case FastDBType.Float:
                         defaultValue = Readfloat();
                         break;
                     case FastDBType.Bool:
                         defaultValue = ReadBool();
                         break;
+                    case FastDBType.Date:
                     case FastDBType.DateTime:
                         defaultValue = DateTime.Parse(ReadString(ReadInt()));
                         break;
@@ -321,6 +373,10 @@ namespace FastDB.NET
 
             // Rows
             int nbRows = ReadInt();
+
+            // read nulls
+            nulls = ReadByteArray(nbRows * nbFields);
+
             Field[] fields = new Field[nbFields];
             i = 0;
             foreach (var field in Fields)
@@ -332,30 +388,35 @@ namespace FastDB.NET
             int j = 0;
             for (i = 0; i < nbRows; i++)
             {
-                Row row = new Row();
+                Row row = new Row(this);
                 row.InitializeCells(nbFields);
                 for (j = 0; j < nbFields; j++)
                 {
-                    switch (fields[j].Type)
-                    {
-                        case FastDBType.String:
-                            row.Set(j, ReadString(ReadInt()));
-                            break;
-                        case FastDBType.Integer:
-                            row.Set(j, ReadInt());
-                            break;
-                        case FastDBType.Float:
-                            row.Set(j, Readfloat());
-                            break;
-                        case FastDBType.Bool:
-                            row.Set(j, ReadBool());
-                            break;
-                        case FastDBType.DateTime:
-                            row.Set(j, DateTime.Parse(ReadString(ReadInt())));
-                            break;
-                        default:
-                            break;
-                    }
+                    if (!isNull(i, j))
+                        switch (fields[j].Type)
+                        {
+                            case FastDBType.String:
+                                row.Set(j, ReadString(ReadInt()));
+                                break;
+                            case FastDBType.Integer:
+                                row.Set(j, ReadInt());
+                                break;
+                            case FastDBType.UnsignedInteger:
+                                row.Set(j, ReadUInt());
+                                break;
+                            case FastDBType.Float:
+                                row.Set(j, Readfloat());
+                                break;
+                            case FastDBType.Bool:
+                                row.Set(j, ReadBool());
+                                break;
+                            case FastDBType.Date:
+                            case FastDBType.DateTime:
+                                row.Set(j, DateTime.Parse(ReadString(ReadInt())));
+                                break;
+                            default:
+                                break;
+                        }
                 }
                 AddRow(row);
             }

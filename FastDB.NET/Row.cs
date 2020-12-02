@@ -7,6 +7,13 @@ namespace FastDB.NET
     public struct Row
     {
         private object[] Cells;
+        public Table table;
+
+        public Row(Table table)
+        {
+            this.table = table;
+            Cells = null;
+        }
 
         public override string ToString()
         {
@@ -14,6 +21,11 @@ namespace FastDB.NET
             foreach (IComparable value in Cells)
                 sb.Append(value.ToString()).Append(" ");
             return sb.ToString();
+        }
+
+        public T Get<T>(string FieldName) where T : IComparable
+        {
+            return (T)Cells[table.Fields[FieldName].FieldIndex];
         }
 
         public T Get<T>(int fieldIndex) where T : IComparable
@@ -24,6 +36,16 @@ namespace FastDB.NET
         public object Get(int fieldIndex)
         {
             return Cells[fieldIndex];
+        }
+
+        public bool isNull(string FieldName)
+        {
+            return Cells[table.Fields[FieldName].FieldIndex] == null;
+        }
+
+        public bool isNull(int FieldIndex)
+        {
+            return Cells[FieldIndex] == null;
         }
 
         public void Set(int fieldIndex, object value)

@@ -11,3 +11,15 @@ C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_B
 C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.pdb
 C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.Browser.resources
 C:\Users\herme\source\repos\FastDB.NET\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.Create_Table.resources
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Browser\bin\Debug\FastDB.NET_Browser.exe
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Browser\bin\Debug\FastDB.NET_Browser.pdb
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Browser\bin\Debug\FastDB.NET.dll
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Browser\bin\Debug\FastDB.NET.pdb
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.csprojResolveAssemblyReference.cache
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.Browser.resources
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.Create_Table.resources
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.Properties.Resources.resources
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.csproj.GenerateResource.Cache
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.csproj.CoreCompileInputs.cache
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.exe
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET_Browser\obj\Debug\FastDB.NET_Browser.pdb

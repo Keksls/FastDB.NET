@@ -98,6 +98,13 @@ namespace FastDB.NET_Browser
                             colInt.HeaderText = field.Key;
                             dataGrid.Columns.Add(colInt);
                             break;
+                        case FastDBType.UnsignedInteger:
+                            DataGridViewTextBoxColumn colUInt = new DataGridViewTextBoxColumn();
+                            colUInt.ValueType = typeof(uint);
+                            colUInt.Name = field.Key;
+                            colUInt.HeaderText = field.Key;
+                            dataGrid.Columns.Add(colUInt);
+                            break;
                         case FastDBType.Float:
                             DataGridViewTextBoxColumn colFloat = new DataGridViewTextBoxColumn();
                             colFloat.ValueType = typeof(int);
@@ -112,6 +119,7 @@ namespace FastDB.NET_Browser
                             colBool.HeaderText = field.Key;
                             dataGrid.Columns.Add(colBool);
                             break;
+                        case FastDBType.Date:
                         case FastDBType.DateTime:
                             DataGridViewTextBoxColumn coldate = new DataGridViewTextBoxColumn();
                             coldate.ValueType = typeof(DateTime);
@@ -155,23 +163,34 @@ namespace FastDB.NET_Browser
                     {
                         case FastDBType.String:
                             cell = new DataGridViewTextBoxCell();
-                            cell.Value = Database.GetTable(table.Name).Rows[i].Get<string>(j);
+                            if (!Database.GetTable(table.Name).Rows[i].isNull(j))
+                                cell.Value = Database.GetTable(table.Name).Rows[i].Get<string>(j);
                             break;
                         case FastDBType.Integer:
                             cell = new DataGridViewTextBoxCell();
-                            cell.Value = Database.GetTable(table.Name).Rows[i].Get<int>(j);
+                            if (!Database.GetTable(table.Name).Rows[i].isNull(j))
+                                cell.Value = Database.GetTable(table.Name).Rows[i].Get<int>(j);
+                            break;
+                        case FastDBType.UnsignedInteger:
+                            cell = new DataGridViewTextBoxCell();
+                            if (!Database.GetTable(table.Name).Rows[i].isNull(j))
+                                cell.Value = Database.GetTable(table.Name).Rows[i].Get<uint>(j);
                             break;
                         case FastDBType.Float:
                             cell = new DataGridViewTextBoxCell();
-                            cell.Value = Database.GetTable(table.Name).Rows[i].Get<float>(j);
+                            if (!Database.GetTable(table.Name).Rows[i].isNull(j))
+                                cell.Value = Database.GetTable(table.Name).Rows[i].Get<float>(j);
                             break;
                         case FastDBType.Bool:
                             cell = new DataGridViewCheckBoxCell();
-                            cell.Value = Database.GetTable(table.Name).Rows[i].Get<bool>(j);
+                            if (!Database.GetTable(table.Name).Rows[i].isNull(j))
+                                cell.Value = Database.GetTable(table.Name).Rows[i].Get<bool>(j);
                             break;
+                        case FastDBType.Date:
                         case FastDBType.DateTime:
                             cell = new DataGridViewTextBoxCell();
-                            cell.Value = Database.GetTable(table.Name).Rows[i].Get<DateTime>(j);
+                            if (!Database.GetTable(table.Name).Rows[i].isNull(j))
+                                cell.Value = Database.GetTable(table.Name).Rows[i].Get<DateTime>(j);
                             break;
                         default:
                             break;
@@ -313,7 +332,7 @@ namespace FastDB.NET_Browser
             }
             if (removingRow)
                 return;
-            int index = currentPageIndex * nbPerPage + e.RowIndex;
+            int index = (currentPageIndex - 1) * nbPerPage + e.RowIndex;
             Database.GetTable(table.Name).Rows.RemoveAt(index);
             lbNbRows.Text = "NbRows : " + Database.GetTable(table.Name).NbRows.ToString();
         }
@@ -472,36 +491,37 @@ namespace FastDB.NET_Browser
             }
             else // Update row
             {
+                object val = Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex - 1) * nbPerPage)].Get(e.ColumnIndex);
                 switch (type)
                 {
                     default:
                     case FastDBType.String:
                         string dgValue = (string)((DataGridViewTextBoxCell)dataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex]).Value;
-                        string dbValue = (string)Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex -1) * nbPerPage)].Get(e.ColumnIndex);
+                        string dbValue = val == null ? default(string) : (string)val; ;
                         if (!dgValue.Equals(dbValue))
                             Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex - 1) * nbPerPage)].Set(e.ColumnIndex, dgValue);
                         break;
                     case FastDBType.Integer:
                         int dgValueI = (int)((DataGridViewTextBoxCell)dataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex]).Value;
-                        int dbValueI = (int)Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex - 1) * nbPerPage)].Get(e.ColumnIndex);
+                        int dbValueI = val == null ? default(int) : (int)val;
                         if (!dgValueI.Equals(dbValueI))
                             Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex - 1) * nbPerPage)].Set(e.ColumnIndex, dgValueI);
                         break;
                     case FastDBType.Float:
                         float dgValueF = (float)((DataGridViewTextBoxCell)dataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex]).Value;
-                        float dbValueF = (float)Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex - 1) * nbPerPage)].Get(e.ColumnIndex);
+                        float dbValueF = val == null ? default(float) : (float)val;
                         if (!dgValueF.Equals(dbValueF))
                             Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex - 1) * nbPerPage)].Set(e.ColumnIndex, dgValueF);
                         break;
                     case FastDBType.Bool:
                         bool dgValueB = (bool)((DataGridViewCheckBoxCell)dataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex]).Value;
-                        bool dbValueB = (bool)Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex - 1) * nbPerPage)].Get(e.ColumnIndex);
+                        bool dbValueB = val == null ? default(bool) : (bool)val;
                         if (!dgValueB.Equals(dbValueB))
                             Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex - 1) * nbPerPage)].Set(e.ColumnIndex, dgValueB);
                         break;
                     case FastDBType.DateTime:
                         DateTime dgValueDT = (DateTime)((DataGridViewTextBoxCell)dataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex]).Value;
-                        DateTime dbValueDT = (DateTime)Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex - 1) * nbPerPage)].Get(e.ColumnIndex);
+                        DateTime dbValueDT = val == null ? default(DateTime) : (DateTime)val;
                         if (!dgValueDT.Equals(dbValueDT))
                             Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex - 1) * nbPerPage)].Set(e.ColumnIndex, dgValueDT);
                         break;
@@ -542,6 +562,23 @@ namespace FastDB.NET_Browser
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             LoadPage();
+        }
+
+        private void Browser_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dataGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.RowIndex == -1 || e.ColumnIndex == -1) return;
+            var cell = dataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex];
+            if (cell is DataGridViewTextBoxCell)
+            {
+                rtbCellData.Text = ((DataGridViewTextBoxCell)cell).Value.ToString();
+            }
+            else
+                rtbCellData.Text = "";
         }
     }
 
