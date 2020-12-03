@@ -104,12 +104,30 @@ namespace FastDB.NET
             SerializableDatabase.bufferPtr = (int*)p;
         }
 
+        internal unsafe void WriteDateTime(DateTime value)
+        {
+            (*(long*)(SerializableDatabase.bufferPtr)) = value.Ticks;
+            SerializableDatabase.bufferPtr += 2;
+        }
+
         internal unsafe void WriteByteArray(byte[] bits)
         {
             byte* p = (byte*)SerializableDatabase.bufferPtr;
             for (int i = 0; i < bits.Length; i++, p++)
                 *(p) = bits[i];
             SerializableDatabase.bufferPtr = (int*)p;
+        }
+
+        internal byte[] BitArrayToByteArray(BitArray bits)
+        {
+            byte[] retVal = new byte[bits.Count / 8];
+            bits.CopyTo(retVal, 0);
+            return retVal;
+        }
+
+        internal BitArray ByteArrayToBitArray(byte[] bytes)
+        {
+            return new BitArray(bytes);
         }
 
         internal unsafe byte[] ReadByteArray(int size)
@@ -128,10 +146,19 @@ namespace FastDB.NET
             return *(SerializableDatabase.bufferPtr - 1);
         }
 
+        internal unsafe DateTime ReadDateTime()
+        {
+            long* p = (long*)SerializableDatabase.bufferPtr;
+            long ticks = *p;
+            p++;
+            SerializableDatabase.bufferPtr = (int*)p;
+            return new DateTime(ticks);
+        }
+
         internal unsafe uint ReadUInt()
         {
             SerializableDatabase.bufferPtr++;
-            return (*(uint*)(SerializableDatabase.bufferPtr - 1));
+            return ((uint)*(SerializableDatabase.bufferPtr - 1));
         }
 
         internal unsafe bool ReadBool()
@@ -145,7 +172,7 @@ namespace FastDB.NET
         internal unsafe float Readfloat()
         {
             SerializableDatabase.bufferPtr++;
-            return (*(float*)(SerializableDatabase.bufferPtr - 1));
+            return ((float)*(SerializableDatabase.bufferPtr - 1));
         }
 
         internal unsafe string ReadString(int size)

@@ -197,7 +197,7 @@ namespace FastDB.NET
                         break;
                     case FastDBType.Date:
                     case FastDBType.DateTime:
-                        size += 4 + ((DateTime)field.Value.DefaultValue).ToString().Length * 2;
+                        size += 8;
                         break;
                     default:
                         break;
@@ -237,7 +237,7 @@ namespace FastDB.NET
                                 break;
                             case FastDBType.Date:
                             case FastDBType.DateTime:
-                                size += 4 + (row.Get<DateTime>(field.FieldIndex)).ToString().Length * 2;
+                                size += 8;
                                 break;
                             default:
                                 break;
@@ -282,8 +282,7 @@ namespace FastDB.NET
                         break;
                     case FastDBType.Date:
                     case FastDBType.DateTime:
-                        WriteInt((((DateTime)field.Value.DefaultValue).ToString()).Length);
-                        WriteString(((DateTime)field.Value.DefaultValue).ToString());
+                        WriteDateTime((DateTime)field.Value.DefaultValue);
                         break;
                     default:
                         break;
@@ -319,8 +318,7 @@ namespace FastDB.NET
                                 break;
                             case FastDBType.Date:
                             case FastDBType.DateTime:
-                                WriteInt((row.Get<DateTime>(field.FieldIndex)).ToString().Length);
-                                WriteString((row.Get<DateTime>(field.FieldIndex)).ToString());
+                                WriteDateTime(row.Get<DateTime>(field.FieldIndex));
                                 break;
                             default:
                                 break;
@@ -362,7 +360,7 @@ namespace FastDB.NET
                         break;
                     case FastDBType.Date:
                     case FastDBType.DateTime:
-                        defaultValue = DateTime.Parse(ReadString(ReadInt()));
+                        defaultValue = ReadDateTime();
                         break;
                     default:
                         defaultValue = null;
@@ -412,7 +410,7 @@ namespace FastDB.NET
                                 break;
                             case FastDBType.Date:
                             case FastDBType.DateTime:
-                                row.Set(j, DateTime.Parse(ReadString(ReadInt())));
+                                row.Set(j, ReadDateTime());
                                 break;
                             default:
                                 break;

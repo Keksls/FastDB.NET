@@ -63,12 +63,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.cbTable = new System.Windows.Forms.ComboBox();
             this.dataGrid = new System.Windows.Forms.DataGridView();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage8 = new System.Windows.Forms.TabPage();
-            this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.tabPage7 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
@@ -81,8 +75,6 @@
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
-            this.tabPage4.SuspendLayout();
-            this.tabControl1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -171,7 +163,7 @@
             this.menuCreateTable.Enabled = false;
             this.menuCreateTable.Image = global::FastDB.NET_Browser.Properties.Resources.iconfinder_table_add_84936;
             this.menuCreateTable.Name = "menuCreateTable";
-            this.menuCreateTable.Size = new System.Drawing.Size(140, 22);
+            this.menuCreateTable.Size = new System.Drawing.Size(138, 22);
             this.menuCreateTable.Text = "Create Table";
             this.menuCreateTable.Click += new System.EventHandler(this.createTableToolStripMenuItem_Click);
             // 
@@ -205,7 +197,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabs.Controls.Add(this.tabPage2);
             this.tabs.Controls.Add(this.tabPage1);
-            this.tabs.Controls.Add(this.tabPage4);
             this.tabs.Enabled = false;
             this.tabs.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabs.ImageList = this.imageList1;
@@ -438,7 +429,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 11);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(36, 15);
+            this.label1.Size = new System.Drawing.Size(34, 15);
             this.label1.TabIndex = 2;
             this.label1.Text = "Table";
             // 
@@ -467,67 +458,6 @@
             this.dataGrid.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellValidated);
             this.dataGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGrid_RowsRemoved);
             // 
-            // tabPage4
-            // 
-            this.tabPage4.Controls.Add(this.tabControl1);
-            this.tabPage4.ImageIndex = 6;
-            this.tabPage4.Location = new System.Drawing.Point(4, 24);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(924, 484);
-            this.tabPage4.TabIndex = 2;
-            this.tabPage4.Text = "Query Execution";
-            this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // tabControl1
-            // 
-            this.tabControl1.Controls.Add(this.tabPage8);
-            this.tabControl1.Controls.Add(this.tabPage5);
-            this.tabControl1.Controls.Add(this.tabPage6);
-            this.tabControl1.Controls.Add(this.tabPage7);
-            this.tabControl1.Location = new System.Drawing.Point(4, 4);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(840, 410);
-            this.tabControl1.TabIndex = 0;
-            // 
-            // tabPage8
-            // 
-            this.tabPage8.Location = new System.Drawing.Point(4, 24);
-            this.tabPage8.Name = "tabPage8";
-            this.tabPage8.Size = new System.Drawing.Size(832, 382);
-            this.tabPage8.TabIndex = 3;
-            this.tabPage8.Text = "Insert";
-            this.tabPage8.UseVisualStyleBackColor = true;
-            // 
-            // tabPage5
-            // 
-            this.tabPage5.Location = new System.Drawing.Point(4, 24);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(832, 382);
-            this.tabPage5.TabIndex = 0;
-            this.tabPage5.Text = "Select";
-            this.tabPage5.UseVisualStyleBackColor = true;
-            // 
-            // tabPage6
-            // 
-            this.tabPage6.Location = new System.Drawing.Point(4, 24);
-            this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(832, 382);
-            this.tabPage6.TabIndex = 1;
-            this.tabPage6.Text = "Update";
-            this.tabPage6.UseVisualStyleBackColor = true;
-            // 
-            // tabPage7
-            // 
-            this.tabPage7.Location = new System.Drawing.Point(4, 24);
-            this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Size = new System.Drawing.Size(832, 382);
-            this.tabPage7.TabIndex = 2;
-            this.tabPage7.Text = "Delete";
-            this.tabPage7.UseVisualStyleBackColor = true;
-            // 
             // panel1
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -548,7 +478,7 @@
             this.label4.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(425, 200);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(163, 21);
+            this.label4.Size = new System.Drawing.Size(162, 21);
             this.label4.TabIndex = 1;
             this.label4.Text = "Working, please wait...";
             // 
@@ -646,8 +576,6 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).EndInit();
-            this.tabPage4.ResumeLayout(false);
-            this.tabControl1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
@@ -689,12 +617,6 @@
         private System.Windows.Forms.Button btnOpenDatabase;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.TabPage tabPage4;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage8;
-        private System.Windows.Forms.TabPage tabPage5;
-        private System.Windows.Forms.TabPage tabPage6;
-        private System.Windows.Forms.TabPage tabPage7;
         private System.Windows.Forms.ToolStripMenuItem closeDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem howToUseToolStripMenuItem;
