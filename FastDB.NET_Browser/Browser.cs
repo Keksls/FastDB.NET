@@ -383,6 +383,8 @@ namespace FastDB.NET_Browser
         {
             cbTable.Items.Clear();
             tvTables.Nodes.Clear();
+            if (Database != null)
+                Database.Close();
             Database = null;
             GC.Collect();
             tabs.Enabled = false;
@@ -575,7 +577,10 @@ namespace FastDB.NET_Browser
             var cell = dataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex];
             if (cell is DataGridViewTextBoxCell)
             {
-                rtbCellData.Text = ((DataGridViewTextBoxCell)cell).Value.ToString();
+                if (((DataGridViewTextBoxCell)cell).Value == null)
+                    rtbCellData.Text = "null";
+                else
+                    rtbCellData.Text = ((DataGridViewTextBoxCell)cell).Value.ToString();
             }
             else
                 rtbCellData.Text = "";
