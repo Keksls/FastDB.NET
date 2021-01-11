@@ -54,7 +54,7 @@ namespace FastDB.NET_Browser
             dgFields.Rows.Clear();
             tbTableName.Text = tableName;
 
-            if (browser.Database.TableExist(tableName))
+            if (browser.Database.TableExists(tableName))
             {
                 if (browser.Database.GetTable(tableName).Fields != null)
                 {
@@ -82,7 +82,7 @@ namespace FastDB.NET_Browser
             browser.ExecuteinThread(() =>
             {
                 HashSet<string> Fields = new HashSet<string>();
-                if (browser.Database.TableExist(tableName))
+                if (browser.Database.TableExists(tableName))
                 {
                     // save table
                     foreach (DataGridViewRow row in dgFields.Rows)

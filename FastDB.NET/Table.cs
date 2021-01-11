@@ -429,10 +429,5 @@ namespace FastDB.NET
                 sb.AppendLine(field.Key + " (" + field.Value.Type.ToString() + ") : " + field.Value.DefaultValue.ToString());
             return sb.ToString();
         }
-
-        public void Insert(object select)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -13,9 +13,22 @@ namespace FastDB.NET_Test
 
         static void Main(string[] args)
         {
-            CreateDatabase();
+            Database = new FastDatabase("TestDB", Environment.CurrentDirectory);
+            Database.CreateTable("test");
+            Table mytable = Database.GetTable("test");
+            mytable.AddField("test", FastDBType.Float);
+            mytable.Insert(0.15f);
+            Database.Save();
+            Database.Close();
+
+            Database = new FastDatabase("TestDB", Environment.CurrentDirectory);
+            Database.Connect();
+            foreach (var row in Database.GetTable("test").Rows)
+                Console.WriteLine(row.Get<float>("test").ToString());
+
+            /*CreateDatabase();
             LoadDatabase();
-            TestSelect();
+            TestSelect();*/
             Console.ReadKey();
         }
 

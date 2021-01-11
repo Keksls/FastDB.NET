@@ -171,6 +171,11 @@ namespace FastDB.NET
 
         internal unsafe float Readfloat()
         {
+            float* p = (float*)SerializableDatabase.bufferPtr;
+            p++;
+            SerializableDatabase.bufferPtr = (int*)p;
+            return *(p - 1);
+
             SerializableDatabase.bufferPtr++;
             return ((float)*(SerializableDatabase.bufferPtr - 1));
         }

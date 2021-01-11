@@ -45,7 +45,7 @@ namespace FastDB.NET
         /// </summary>
         /// <param name="Name">Name of the table to check</param>
         /// <returns>true if table exist</returns>
-        public bool TableExist(string Name)
+        public bool TableExists(string Name)
         {
             return Tables.ContainsKey(Name);
         }
@@ -91,6 +91,27 @@ namespace FastDB.NET
                 throw new TableDontExistExceptions();
             // return the table
             return Tables[Name];
+        }
+
+        /// <summary>
+        /// Rename a table
+        /// </summary>
+        /// <param name="OldTableName">current Name of the table</param>
+        /// <param name="NewTableName">Target new Name of the table</param>
+        /// <returns></returns>
+        public FastDatabase RenameTable(string OldTableName, string NewTableName)
+        {
+            // Check if old table exist
+            if (!Tables.ContainsKey(OldTableName))
+                throw new TableDontExistExceptions();
+            // Check if new table exist
+            if (Tables.ContainsKey(NewTableName))
+                throw new TableAlreadyExistExceptions();
+            // Rename Table
+            Tables.Add(NewTableName, Tables[OldTableName]);
+            Tables.Remove(OldTableName);
+            Tables[NewTableName].Name = NewTableName;
+            return this;
         }
 
         /// <summary>
