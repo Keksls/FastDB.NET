@@ -59,6 +59,12 @@ namespace FastDB.NET
                     case FastDBType.Float:
                         defaultValue = default(float);
                         break;
+                    case FastDBType.Double:
+                        defaultValue = default(double);
+                        break;
+                    case FastDBType.ByteArray:
+                        defaultValue = null;
+                        break;
                     case FastDBType.Bool:
                         defaultValue = default(bool);
                         break;
@@ -192,6 +198,9 @@ namespace FastDB.NET
                     case FastDBType.Float:
                         size += 4;
                         break;
+                    case FastDBType.Double:
+                        size += 8;
+                        break;
                     case FastDBType.Bool:
                         size += 4;
                         break;
@@ -232,12 +241,19 @@ namespace FastDB.NET
                             case FastDBType.Float:
                                 size += 4;
                                 break;
+                            case FastDBType.Double:
+                                size += 8;
+                                break;
                             case FastDBType.Bool:
                                 size += 4;
                                 break;
                             case FastDBType.Date:
                             case FastDBType.DateTime:
                                 size += 8;
+                                break;
+                            case FastDBType.ByteArray:
+                                size += 4; // Size
+                                size += row.GetByteArray(field.FieldIndex).Length;
                                 break;
                             default:
                                 break;
@@ -277,6 +293,11 @@ namespace FastDB.NET
                     case FastDBType.Float:
                         WriteFloat((float)field.Value.DefaultValue);
                         break;
+                    case FastDBType.Double:
+                        WriteDouble((double)field.Value.DefaultValue);
+                        break;
+                    case FastDBType.ByteArray:
+                        break;
                     case FastDBType.Bool:
                         WriteBool((bool)field.Value.DefaultValue);
                         break;
@@ -313,8 +334,15 @@ namespace FastDB.NET
                             case FastDBType.Float:
                                 WriteFloat(row.Get<float>(field.FieldIndex));
                                 break;
+                            case FastDBType.Double:
+                                WriteDouble(row.Get<double>(field.FieldIndex));
+                                break;
                             case FastDBType.Bool:
                                 WriteBool(row.Get<bool>(field.FieldIndex));
+                                break;
+                            case FastDBType.ByteArray:
+                                WriteInt(row.GetByteArray(field.FieldIndex).Length);
+                                WriteByteArray(row.GetByteArray(field.FieldIndex));
                                 break;
                             case FastDBType.Date:
                             case FastDBType.DateTime:
@@ -354,6 +382,9 @@ namespace FastDB.NET
                         break;
                     case FastDBType.Float:
                         defaultValue = Readfloat();
+                        break;
+                    case FastDBType.Double:
+                        defaultValue = ReadDouble();
                         break;
                     case FastDBType.Bool:
                         defaultValue = ReadBool();
@@ -405,8 +436,14 @@ namespace FastDB.NET
                             case FastDBType.Float:
                                 row.Set(j, Readfloat());
                                 break;
+                            case FastDBType.Double:
+                                row.Set(j, ReadDouble());
+                                break;
                             case FastDBType.Bool:
                                 row.Set(j, ReadBool());
+                                break;
+                            case FastDBType.ByteArray:
+                                row.Set(j, ReadByteArray(ReadInt()));
                                 break;
                             case FastDBType.Date:
                             case FastDBType.DateTime:

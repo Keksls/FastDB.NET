@@ -186,7 +186,9 @@ public enum FastDBType
     Bool = 4,
     Date = 5,
     DateTime = 6,
-    UnsignedInteger = 7
+    UnsignedInteger = 7,
+    Double = 8,
+    ByteArray = 9
 }
 
 public enum DBCondition

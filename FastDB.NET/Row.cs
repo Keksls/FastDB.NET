@@ -33,6 +33,16 @@ namespace FastDB.NET
             return (T)Cells[fieldIndex];
         }
 
+        public byte[] GetByteArray(string FieldName)
+        {
+            return (byte[])Cells[table.Fields[FieldName].FieldIndex];
+        }
+
+        public byte[] GetByteArray(int fieldIndex)
+        {
+            return (byte[])Cells[fieldIndex];
+        }
+
         public object Get(int fieldIndex)
         {
             return Cells[fieldIndex];

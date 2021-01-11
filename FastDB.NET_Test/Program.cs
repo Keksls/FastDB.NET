@@ -16,15 +16,16 @@ namespace FastDB.NET_Test
             Database = new FastDatabase("TestDB", Environment.CurrentDirectory);
             Database.CreateTable("test");
             Table mytable = Database.GetTable("test");
-            mytable.AddField("test", FastDBType.Float);
-            mytable.Insert(0.15f);
+            mytable.AddField("test", FastDBType.Double);
+            mytable.AddField("test2", FastDBType.ByteArray);
+            mytable.Insert(0.15d, new byte[2] { 128, 255 });
             Database.Save();
             Database.Close();
 
             Database = new FastDatabase("TestDB", Environment.CurrentDirectory);
             Database.Connect();
             foreach (var row in Database.GetTable("test").Rows)
-                Console.WriteLine(row.Get<float>("test").ToString());
+                Console.WriteLine(row.Get<double>("test").ToString() + " " + row.GetByteArray("test2")[0].ToString() + " " + row.GetByteArray("test2")[1].ToString());
 
             /*CreateDatabase();
             LoadDatabase();

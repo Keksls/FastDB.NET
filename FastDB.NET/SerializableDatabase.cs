@@ -96,6 +96,12 @@ namespace FastDB.NET
             SerializableDatabase.bufferPtr++;
         }
 
+        internal unsafe void WriteDouble(double value)
+        {
+            (*(double*)(SerializableDatabase.bufferPtr)) = value;
+            SerializableDatabase.bufferPtr+=2;
+        }
+        
         internal unsafe void WriteBool(bool value)
         {
             (*(bool*)(SerializableDatabase.bufferPtr)) = value;
@@ -175,11 +181,16 @@ namespace FastDB.NET
             p++;
             SerializableDatabase.bufferPtr = (int*)p;
             return *(p - 1);
-
-            SerializableDatabase.bufferPtr++;
-            return ((float)*(SerializableDatabase.bufferPtr - 1));
         }
 
+        internal unsafe double ReadDouble()
+        {
+            double* p = (double*)SerializableDatabase.bufferPtr;
+            p++;
+            SerializableDatabase.bufferPtr = (int*)p;
+            return *(p - 1);
+        }
+        
         internal unsafe string ReadString(int size)
         {
             char[] charArray = new char[size];
