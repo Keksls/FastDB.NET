@@ -142,6 +142,8 @@ namespace FastDB.NET_Browser
             {
                 string typeString = (string)dgFields.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
                 FastDBType type = browser.TypeFromString(typeString);
+                if (!browser.Database.TableExists(tableName))
+                    return;
                 Field field = browser.Database.GetTable(tableName).Fields.ElementAt(e.ColumnIndex).Value;
                 switch (type)
                 {
@@ -159,6 +161,20 @@ namespace FastDB.NET_Browser
                         colint.Value = (int)field.DefaultValue;
                         dgFields.Rows[e.RowIndex].Cells[2] = colint;
                         break;
+                    case FastDBType.UnsignedInteger:
+                        DataGridViewTextBoxCell coluint = new DataGridViewTextBoxCell();
+                        coluint.ValueType = typeof(uint);
+                        field.DefaultValue = default(uint);
+                        coluint.Value = (uint)field.DefaultValue;
+                        dgFields.Rows[e.RowIndex].Cells[2] = coluint;
+                        break;
+                    case FastDBType.Double:
+                        DataGridViewTextBoxCell coldouble = new DataGridViewTextBoxCell();
+                        coldouble.ValueType = typeof(double);
+                        field.DefaultValue = default(double);
+                        coldouble.Value = (double)field.DefaultValue;
+                        dgFields.Rows[e.RowIndex].Cells[2] = coldouble;
+                        break;
                     case FastDBType.Float:
                         DataGridViewTextBoxCell colfloat = new DataGridViewTextBoxCell();
                         colfloat.ValueType = typeof(float);
@@ -173,7 +189,15 @@ namespace FastDB.NET_Browser
                         colbool.Value = (bool)field.DefaultValue;
                         dgFields.Rows[e.RowIndex].Cells[2] = colbool;
                         break;
+                    case FastDBType.ByteArray:
+                        DataGridViewCheckBoxCell colba = new DataGridViewCheckBoxCell();
+                        colba.ValueType = typeof(byte[]);
+                        field.DefaultValue = "";
+                        colba.Value = (byte[])field.DefaultValue;
+                        dgFields.Rows[e.RowIndex].Cells[2] = colba;
+                        break;
                     case FastDBType.DateTime:
+                    case FastDBType.Date:
                         DataGridViewTextBoxCell coldt = new DataGridViewTextBoxCell();
                         coldt.ValueType = typeof(DateTime);
                         field.DefaultValue = default(DateTime);
@@ -183,6 +207,11 @@ namespace FastDB.NET_Browser
                         break;
                 }
             }
+        }
+
+        private void tbTableName_TextChanged(object sender, EventArgs e)
+        {
+            tableName = tbTableName.Text;
         }
     }
 }

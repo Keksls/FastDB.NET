@@ -15,3 +15,4 @@ C:\Users\herme\Desktop\fastdb.net\FastDB.NET\obj\Debug\FastDB.NET.csprojAssembly
 C:\Users\herme\Desktop\fastdb.net\FastDB.NET\obj\Debug\FastDB.NET.csproj.CoreCompileInputs.cache
 C:\Users\herme\Desktop\fastdb.net\FastDB.NET\obj\Debug\FastDB.NET.dll
 C:\Users\herme\Desktop\fastdb.net\FastDB.NET\obj\Debug\FastDB.NET.pdb
+C:\Users\zxmulvirt013\Desktop\Burreau\fastdb.net\FastDB.NET\obj\Debug\FastDB.NET.csprojResolveAssemblyReference.cache

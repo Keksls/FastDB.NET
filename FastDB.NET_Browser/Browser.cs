@@ -107,10 +107,17 @@ namespace FastDB.NET_Browser
                             break;
                         case FastDBType.Float:
                             DataGridViewTextBoxColumn colFloat = new DataGridViewTextBoxColumn();
-                            colFloat.ValueType = typeof(int);
+                            colFloat.ValueType = typeof(float);
                             colFloat.Name = field.Key;
                             colFloat.HeaderText = field.Key;
                             dataGrid.Columns.Add(colFloat);
+                            break;
+                        case FastDBType.Double:
+                            DataGridViewTextBoxColumn colDouble = new DataGridViewTextBoxColumn();
+                            colDouble.ValueType = typeof(double);
+                            colDouble.Name = field.Key;
+                            colDouble.HeaderText = field.Key;
+                            dataGrid.Columns.Add(colDouble);
                             break;
                         case FastDBType.Bool:
                             DataGridViewCheckBoxColumn colBool = new DataGridViewCheckBoxColumn();
@@ -118,6 +125,13 @@ namespace FastDB.NET_Browser
                             colBool.Name = field.Key;
                             colBool.HeaderText = field.Key;
                             dataGrid.Columns.Add(colBool);
+                            break;
+                        case FastDBType.ByteArray:
+                            DataGridViewTextBoxColumn colBA = new DataGridViewTextBoxColumn();
+                            colBA.ValueType = typeof(byte[]);
+                            colBA.Name = field.Key;
+                            colBA.HeaderText = field.Key;
+                            dataGrid.Columns.Add(colBA);
                             break;
                         case FastDBType.Date:
                         case FastDBType.DateTime:
@@ -181,10 +195,20 @@ namespace FastDB.NET_Browser
                             if (!Database.GetTable(table.Name).Rows[i].isNull(j))
                                 cell.Value = Database.GetTable(table.Name).Rows[i].Get<float>(j);
                             break;
+                        case FastDBType.Double:
+                            cell = new DataGridViewTextBoxCell();
+                            if (!Database.GetTable(table.Name).Rows[i].isNull(j))
+                                cell.Value = Database.GetTable(table.Name).Rows[i].Get<double>(j);
+                            break;
                         case FastDBType.Bool:
                             cell = new DataGridViewCheckBoxCell();
                             if (!Database.GetTable(table.Name).Rows[i].isNull(j))
                                 cell.Value = Database.GetTable(table.Name).Rows[i].Get<bool>(j);
+                            break;
+                        case FastDBType.ByteArray:
+                            cell = new DataGridViewTextBoxCell();
+                            if (!Database.GetTable(table.Name).Rows[i].isNull(j))
+                                cell.Value = "byte[" +  Database.GetTable(table.Name).Rows[i].GetByteArray(j).Length + "]";
                             break;
                         case FastDBType.Date:
                         case FastDBType.DateTime:
@@ -509,11 +533,23 @@ namespace FastDB.NET_Browser
                         if (!dgValueI.Equals(dbValueI))
                             Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex - 1) * nbPerPage)].Set(e.ColumnIndex, dgValueI);
                         break;
+                    case FastDBType.UnsignedInteger:
+                        uint dgValueUI = (uint)((DataGridViewTextBoxCell)dataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex]).Value;
+                        uint dbValueUI = val == null ? default(uint) : (uint)val;
+                        if (!dgValueUI.Equals(dbValueUI))
+                            Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex - 1) * nbPerPage)].Set(e.ColumnIndex, dgValueUI);
+                        break;
                     case FastDBType.Float:
                         float dgValueF = (float)((DataGridViewTextBoxCell)dataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex]).Value;
                         float dbValueF = val == null ? default(float) : (float)val;
                         if (!dgValueF.Equals(dbValueF))
                             Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex - 1) * nbPerPage)].Set(e.ColumnIndex, dgValueF);
+                        break;
+                    case FastDBType.Double:
+                        double dgValueD = (double)((DataGridViewTextBoxCell)dataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex]).Value;
+                        double dbValueD = val == null ? default(double) : (double)val;
+                        if (!dgValueD.Equals(dbValueD))
+                            Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex - 1) * nbPerPage)].Set(e.ColumnIndex, dgValueD);
                         break;
                     case FastDBType.Bool:
                         bool dgValueB = (bool)((DataGridViewCheckBoxCell)dataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex]).Value;
@@ -521,6 +557,13 @@ namespace FastDB.NET_Browser
                         if (!dgValueB.Equals(dbValueB))
                             Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex - 1) * nbPerPage)].Set(e.ColumnIndex, dgValueB);
                         break;
+                    case FastDBType.ByteArray:
+                        byte[] dgValueBa = (byte[])((DataGridViewCheckBoxCell)dataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex]).Value;
+                        byte[] dbValueBa = val == null ? default(byte[]) : (byte[])val;
+                        if (!dgValueBa.Equals(dbValueBa))
+                            Database.GetTable(table.Name).Rows[e.RowIndex + ((currentPageIndex - 1) * nbPerPage)].Set(e.ColumnIndex, dgValueBa);
+                        break;
+                    case FastDBType.Date:
                     case FastDBType.DateTime:
                         DateTime dgValueDT = (DateTime)((DataGridViewTextBoxCell)dataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex]).Value;
                         DateTime dbValueDT = val == null ? default(DateTime) : (DateTime)val;

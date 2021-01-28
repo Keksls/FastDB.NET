@@ -50,13 +50,14 @@
             this.tbTableName.Name = "tbTableName";
             this.tbTableName.Size = new System.Drawing.Size(520, 23);
             this.tbTableName.TabIndex = 0;
+            this.tbTableName.TextChanged += new System.EventHandler(this.tbTableName_TextChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(44, 17);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(67, 15);
+            this.label1.Size = new System.Drawing.Size(69, 15);
             this.label1.TabIndex = 1;
             this.label1.Text = "Table name";
             // 
@@ -89,8 +90,12 @@
             this.Type.Items.AddRange(new object[] {
             "String",
             "Float",
+            "Double",
             "Integer",
+            "UnsignedInteger",
             "Bool",
+            "ByteArray",
+            "Date",
             "DateTime"});
             this.Type.Name = "Type";
             this.Type.Width = 180;
@@ -150,7 +155,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(647, 528);
+            this.ClientSize = new System.Drawing.Size(647, 529);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.dgFields);
             this.Controls.Add(this.btnCancel);
@@ -181,10 +186,10 @@
         private System.Windows.Forms.Button btnCreateTable;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.DataGridView dgFields;
+        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.DataGridViewTextBoxColumn FieldName;
         private System.Windows.Forms.DataGridViewComboBoxColumn Type;
         private System.Windows.Forms.DataGridViewTextBoxColumn Default;
-        private System.Windows.Forms.ImageList imageList1;
-        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
