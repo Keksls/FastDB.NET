@@ -7,20 +7,21 @@
         MinWidth="1120"
         MinHeight="720"
         WindowStartupLocation="CenterScreen"
-        Background="White">
+        Background="{StaticResource AppBrush}">
     <DockPanel>
-        <Border DockPanel.Dock="Top" Background="White" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,0,1" Padding="16,12">
+        <Border DockPanel.Dock="Top" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,0,1" Padding="18,13">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="FastDB" FontSize="22" FontWeight="Bold" Foreground="{StaticResource InkBrush}" VerticalAlignment="Center" />
-                    <Border Background="{StaticResource AccentSoftBrush}" CornerRadius="4" Margin="12,0,0,0" Padding="8,3">
+                    <TextBlock Text="FastDB" FontSize="24" FontWeight="Bold" Foreground="{StaticResource InkBrush}" VerticalAlignment="Center" />
+                    <TextBlock Text="Browser" FontSize="24" Margin="7,0,0,0" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" />
+                    <Border Background="{StaticResource AccentSoftBrush}" CornerRadius="6" Margin="14,0,0,0" Padding="10,4">
                         <TextBlock x:Name="DatabaseBadge" Text="No database" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" />
                     </Border>
-                    <TextBlock x:Name="DatabasePathText" Margin="12,0,0,0" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" />
+                    <TextBlock x:Name="DatabasePathText" Margin="14,0,0,0" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="520" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <Button Content="New" Click="NewDatabase_Click" />
@@ -33,7 +34,7 @@
             </Grid>
         </Border>
 
-        <StatusBar DockPanel.Dock="Bottom" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0">
+        <StatusBar DockPanel.Dock="Bottom" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0">
             <StatusBarItem>
                 <TextBlock x:Name="StatusText" Text="Ready" />
             </StatusBarItem>
@@ -45,37 +46,58 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="280" />
+                <ColumnDefinition Width="304" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <Border Grid.Column="0" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,1,0">
-                <DockPanel Margin="14">
+                <DockPanel Margin="16">
                     <StackPanel DockPanel.Dock="Top">
-                        <TextBlock Text="Tables" FontWeight="Bold" FontSize="15" Foreground="{StaticResource InkBrush}" />
-                        <TextBox x:Name="TableSearchBox" Margin="0,10,0,10" TextChanged="TableSearchBox_TextChanged" />
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="Tables" FontWeight="Bold" FontSize="16" Foreground="{StaticResource InkBrush}" />
+                        <TextBlock Text="Schema and row explorer" Margin="0,4,0,0" Foreground="{StaticResource MutedBrush}" />
+                        <TextBox x:Name="TableSearchBox" Margin="0,14,0,12" TextChanged="TableSearchBox_TextChanged" />
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                             <Button Content="Add" Click="AddTable_Click" />
                             <Button Content="Rename" Click="RenameTable_Click" />
-                            <Button Content="Delete" Click="DeleteTable_Click" Margin="0" />
+                            <Button Content="Delete" Style="{StaticResource DangerButton}" Click="DeleteTable_Click" Margin="0" />
                         </StackPanel>
                     </StackPanel>
 
                     <ListBox x:Name="TablesList"
                              SelectionChanged="TablesList_SelectionChanged"
                              BorderBrush="{StaticResource LineBrush}"
-                             Background="White"
-                             DisplayMemberPath="Name" />
+                             Background="{StaticResource InputBrush}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource InkBrush}" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Foreground="{StaticResource MutedBrush}" FontSize="12">
+                                            <Run Text="{Binding Fields, Mode=OneWay}" />
+                                            <Run Text=" fields" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Background="{StaticResource SurfaceAltBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="8,3" VerticalAlignment="Center" Margin="8,0,0,0">
+                                        <TextBlock Text="{Binding Rows, Mode=OneWay}" Foreground="{StaticResource AccentBrush}" FontSize="12" FontWeight="SemiBold" />
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </DockPanel>
             </Border>
 
-            <Grid Grid.Column="1">
+            <Grid Grid.Column="1" Background="{StaticResource AppBrush}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Border Grid.Row="0" Background="White" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,0,1" Padding="18,14">
+                <Border Grid.Row="0" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,0,1" Padding="20,16">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -92,9 +114,9 @@
                     </Grid>
                 </Border>
 
-                <TabControl Grid.Row="1" x:Name="MainTabs" BorderThickness="0">
+                <TabControl Grid.Row="1" x:Name="MainTabs" BorderThickness="0" Background="{StaticResource AppBrush}">
                     <TabItem Header="Data">
-                        <DockPanel Margin="18">
+                        <DockPanel Margin="18" Background="{StaticResource AppBrush}">
                             <Border DockPanel.Dock="Top" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,12" Margin="0,0,0,12">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -117,7 +139,7 @@
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal">
                                         <Button Content="Add row" Click="AddRow_Click" />
-                                        <Button Content="Delete selected" Click="DeleteRows_Click" Margin="0" />
+                                        <Button Content="Delete selected" Style="{StaticResource DangerButton}" Click="DeleteRows_Click" Margin="0" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -131,12 +153,12 @@
                     </TabItem>
 
                     <TabItem Header="Schema">
-                        <Grid Margin="18">
+                        <Grid Margin="18" Background="{StaticResource AppBrush}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" Padding="12" Margin="0,0,0,12">
+                            <Border Grid.Row="0" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,12">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1.2*" />
@@ -152,23 +174,23 @@
                             </Border>
                             <DataGrid x:Name="FieldsGrid" Grid.Row="1" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" />
                             <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10">
-                                <Button Content="Remove field" Click="RemoveField_Click" Margin="0" />
+                                <Button Content="Remove field" Style="{StaticResource DangerButton}" Click="RemoveField_Click" Margin="0" />
                             </StackPanel>
                         </Grid>
                     </TabItem>
 
                     <TabItem Header="Indexes">
-                        <Grid Margin="18">
+                        <Grid Margin="18" Background="{StaticResource AppBrush}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" Padding="12" Margin="0,0,0,12">
+                            <Border Grid.Row="0" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,12">
                                 <StackPanel Orientation="Horizontal">
                                     <ComboBox x:Name="IndexFieldBox" Width="220" Margin="0,0,10,0" />
                                     <CheckBox x:Name="UniqueIndexBox" Content="Unique" VerticalAlignment="Center" Margin="0,0,12,0" />
                                     <Button Content="Create index" Style="{StaticResource PrimaryButton}" Click="CreateIndex_Click" />
-                                    <Button Content="Drop selected" Click="DropIndex_Click" Margin="0" />
+                                    <Button Content="Drop selected" Style="{StaticResource DangerButton}" Click="DropIndex_Click" Margin="0" />
                                 </StackPanel>
                             </Border>
                             <DataGrid x:Name="IndexesGrid" Grid.Row="1" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" />
@@ -176,12 +198,12 @@
                     </TabItem>
 
                     <TabItem Header="Exchange">
-                        <Grid Margin="18">
+                        <Grid Margin="18" Background="{StaticResource AppBrush}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Border BorderBrush="{StaticResource LineBrush}" BorderThickness="1" Padding="16" Margin="0,0,12,0">
+                            <Border Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="18" Margin="0,0,12,0">
                                 <StackPanel>
                                     <TextBlock Text="Database JSON" FontSize="17" FontWeight="Bold" Foreground="{StaticResource InkBrush}" />
                                     <TextBlock Text="Use this for external tools, diffs, and full database edits." TextWrapping="Wrap" Margin="0,6,0,16" Foreground="{StaticResource MutedBrush}" />
@@ -191,7 +213,7 @@
                                     </StackPanel>
                                 </StackPanel>
                             </Border>
-                            <Border Grid.Column="1" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" Padding="16">
+                            <Border Grid.Column="1" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="18">
                                 <StackPanel>
                                     <TextBlock Text="Table CSV" FontSize="17" FontWeight="Bold" Foreground="{StaticResource InkBrush}" />
                                     <TextBlock Text="Use this for spreadsheet-style edits on the selected table." TextWrapping="Wrap" Margin="0,6,0,16" Foreground="{StaticResource MutedBrush}" />

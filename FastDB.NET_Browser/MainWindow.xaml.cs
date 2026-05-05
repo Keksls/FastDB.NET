@@ -582,9 +582,10 @@ namespace FastDB.NET_Browser
 
             if (e.Column is DataGridTextColumn textColumn)
             {
-                textColumn.ElementStyle = new Style(typeof(TextBlock));
+                textColumn.ElementStyle = new Style(typeof(TextBlock), (Style)FindResource(typeof(TextBlock)));
                 textColumn.ElementStyle.Setters.Add(new Setter(TextBlock.TextTrimmingProperty, System.Windows.TextTrimming.CharacterEllipsis));
-                textColumn.EditingElementStyle = new Style(typeof(TextBox));
+                textColumn.ElementStyle.Setters.Add(new Setter(TextBlock.PaddingProperty, new Thickness(6, 0, 6, 0)));
+                textColumn.EditingElementStyle = new Style(typeof(TextBox), (Style)FindResource(typeof(TextBox)));
                 textColumn.EditingElementStyle.Setters.Add(new Setter(TextBox.PaddingProperty, new Thickness(6, 3, 6, 3)));
             }
         }
@@ -817,10 +818,10 @@ namespace FastDB.NET_Browser
                 Height = 180,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 ResizeMode = ResizeMode.NoResize,
-                Background = System.Windows.Media.Brushes.White
+                Background = (System.Windows.Media.Brush)FindResource("AppBrush")
             };
 
-            Grid grid = new Grid { Margin = new Thickness(18) };
+            Grid grid = new Grid { Margin = new Thickness(18), Background = (System.Windows.Media.Brush)FindResource("AppBrush") };
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
