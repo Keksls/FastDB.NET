@@ -4,10 +4,8 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>FastDB.NET_Browser</RootNamespace>
     <AssemblyName>FastDB.NET_Browser</AssemblyName>
-    <UseWindowsForms>true</UseWindowsForms>
-    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
-    <GenerateResourceWarnOnBinaryFormatterUse>false</GenerateResourceWarnOnBinaryFormatterUse>
-    <NoWarn>$(NoWarn);CA1416</NoWarn>
+    <UseWPF>true</UseWPF>
+    <EnableDefaultItems>false</EnableDefaultItems>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -16,11 +14,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FastDB.NET\FastDB.NET.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Database-01.ico" />
-    <Content Include="iconfinder_Database_2_40095.ico" />
+    <Resource Include="Database-01.ico" />
   </ItemGroup>
 </Project>
