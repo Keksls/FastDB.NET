@@ -1,125 +1,26 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9B0B4B63-1C53-4F8A-960B-44E78F92E28A}</ProjectGuid>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <RootNamespace>FastDB.NET_Browser</RootNamespace>
     <AssemblyName>FastDB.NET_Browser</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <UseWindowsForms>true</UseWindowsForms>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+    <GenerateResourceWarnOnBinaryFormatterUse>false</GenerateResourceWarnOnBinaryFormatterUse>
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ApplicationIcon>Database-01.ico</ApplicationIcon>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>Database-01.ico</ApplicationIcon>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
+    <ProjectReference Include="..\FastDB.NET\FastDB.NET.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Browser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Browser.Designer.cs">
-      <DependentUpon>Browser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Create Table.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Create Table.Designer.cs">
-      <DependentUpon>Create Table.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Browser.resx">
-      <DependentUpon>Browser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Create Table.resx">
-      <DependentUpon>Create Table.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\iconfinder_Database_2_40095.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FastDB.NET\FastDB.NET.csproj">
-      <Project>{39cad585-0f34-4c68-a726-4ea1eeafa7f1}</Project>
-      <Name>FastDB.NET</Name>
-    </ProjectReference>
-  </ItemGroup>
+
   <ItemGroup>
     <Content Include="Database-01.ico" />
     <Content Include="iconfinder_Database_2_40095.ico" />
-    <None Include="Resources\Button Refresh-01.png" />
-    <None Include="Resources\Button First-01.png" />
-    <None Include="Resources\Button Forward-01.png" />
-    <None Include="Resources\Button Rewind-01.png" />
-    <None Include="Resources\Button Last-01.png" />
-    <None Include="Resources\Database-01.png" />
-    <None Include="Resources\Button Info-01.png" />
-    <None Include="Resources\Help-01.png" />
-    <None Include="Resources\Drive Generic-01.png" />
-    <None Include="Resources\Button Remove-01.png" />
-    <None Include="Resources\Button Turn Off-01.png" />
-    <None Include="Resources\iconfinder_database_close_36899.png" />
-    <None Include="Resources\Database Add-01.png" />
-    <None Include="Resources\Database Download Data-01.png" />
-    <None Include="Resources\databasecrxpop5.png" />
-    <None Include="Resources\iconfinder_table-edit_44399.png" />
-    <None Include="Resources\iconfinder_table-delete_60042.png" />
-    <None Include="Resources\iconfinder_table-add_84936.png" />
-    <None Include="Resources\iconfinder_Database_copy_Amazon_SimpleDB_Domain_259313.png" />
-    <None Include="Resources\iconfinder_logout_close_sign_out_exit_access_3994382.png" />
-    <None Include="Resources\iconfinder_floppy_285657.png" />
-    <None Include="Resources\iconfinder_Database_copy_DynamoDB_Table_259307.png" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

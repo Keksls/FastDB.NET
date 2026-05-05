@@ -1,179 +1,364 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Text.Json;
 
 namespace FastDB.NET
 {
-    public class FastDatabase : SerializableBlock
+    public sealed class FastDatabase
     {
+        private string _password;
+        private bool _batching;
+        private bool _dirtyDuringBatch;
+
         public string DatabaseName { get; private set; }
         public string FilePath { get; private set; }
-        public Dictionary<string, Table> Tables { get; private set; }
+        public IReadOnlyDictionary<string, Table> Tables { get { return _tables; } }
+        public bool AutoSave { get; set; }
+        public bool IsDirty { get; private set; }
+        public bool IsLocked { get { return _password != null; } }
+        public string FullPath { get { return Path.Combine(FilePath, DatabaseName + ".FastDB"); } }
+
+        private readonly Dictionary<string, Table> _tables;
 
         public FastDatabase(string databaseName, string filePath)
         {
+            ValidateName(databaseName, nameof(databaseName));
             DatabaseName = databaseName;
-            FilePath = filePath;
-            Tables = new Dictionary<string, Table>();
+            FilePath = string.IsNullOrWhiteSpace(filePath) ? Environment.CurrentDirectory : filePath;
+            _tables = new Dictionary<string, Table>(StringComparer.Ordinal);
         }
 
-        /// <summary>
-        /// Open the database binary file and bind this instance from it
-        /// </summary>
-        /// <returns>this instance</returns>
-        public FastDatabase Connect()
+        public FastDatabase Connect(string password = null)
         {
-            // deserialize the binary data from the db file and bind this instance
-            SerializableDatabase.Deserialize(this);
+            _tables.Clear();
+            SerializableDatabase.Deserialize(this, password);
+            _password = password;
+            IsDirty = false;
             return this;
         }
 
-        /// <summary>
-        /// Save this database instance to binary file
-        /// </summary>
-        /// <returns>this instance</returns>
+        public FastDatabase Open(string password = null)
+        {
+            return Connect(password);
+        }
+
         public FastDatabase Save()
         {
-            // Serialize this instance of database to the binary file
-            SerializableDatabase.Serialize(this);
+            SerializableDatabase.Serialize(this, _password);
+            IsDirty = false;
+            _dirtyDuringBatch = false;
             return this;
         }
 
-        /// <summary>
-        /// Check if a table exist
-        /// </summary>
-        /// <param name="Name">Name of the table to check</param>
-        /// <returns>true if table exist</returns>
-        public bool TableExists(string Name)
+        public FastDatabase SaveAs(string databaseName, string filePath = null, string password = null)
         {
-            return Tables.ContainsKey(Name);
+            ValidateName(databaseName, nameof(databaseName));
+            string previousName = DatabaseName;
+            string previousPath = FilePath;
+            string previousPassword = _password;
+            try
+            {
+                DatabaseName = databaseName;
+                FilePath = filePath ?? FilePath;
+                _password = password;
+                Save();
+                return this;
+            }
+            finally
+            {
+                DatabaseName = previousName;
+                FilePath = previousPath;
+                _password = previousPassword;
+            }
         }
 
-        /// <summary>
-        /// Remove a table from this table
-        /// </summary>
-        /// <param name="Name">the name of the table to remove</param>
-        /// <returns>this instance of FastDatabase</returns>
-        public FastDatabase RemoveTable(string Name)
+        public FastDatabase Lock(string password)
         {
-            if (!Tables.ContainsKey(Name))
-                throw new TableDontExistExceptions();
-            Tables.Remove(Name);
-            GC.Collect();
+            if (string.IsNullOrEmpty(password))
+                throw new ArgumentException("Password cannot be empty.", nameof(password));
+
+            _password = password;
+            MarkChanged();
             return this;
         }
 
-        /// <summary>
-        /// Create a new table to this database
-        /// </summary>
-        /// <param name="Name">Name of the Table to create</param>
-        /// <returns>return this instance of Database</returns>
-        public FastDatabase CreateTable(string Name)
+        public FastDatabase UnLock(string password)
         {
-            // check if data already exist
-            if (Tables.ContainsKey(Name))
-                throw new TableAlreadyExistExceptions();
-            else
-                Tables.Add(Name, new Table(Name)); // add the table
+            if (_password != null && _password != password)
+                throw new UnauthorizedAccessException("Invalid database password.");
+
+            _password = null;
+            MarkChanged();
             return this;
         }
 
-        /// <summary>
-        /// Get a table from it name
-        /// </summary>
-        /// <param name="Name">Name of the table to get</param>
-        /// <returns>The table instance</returns>
-        public Table GetTable(string Name)
+        public FastDatabase Unlock(string password)
         {
-            // CHeck if table exist
-            if (!Tables.ContainsKey(Name))
-                throw new TableDontExistExceptions();
-            // return the table
-            return Tables[Name];
+            return UnLock(password);
         }
 
-        /// <summary>
-        /// Rename a table
-        /// </summary>
-        /// <param name="OldTableName">current Name of the table</param>
-        /// <param name="NewTableName">Target new Name of the table</param>
-        /// <returns></returns>
-        public FastDatabase RenameTable(string OldTableName, string NewTableName)
+        public bool TableExists(string name)
         {
-            // Check if old table exist
-            if (!Tables.ContainsKey(OldTableName))
-                throw new TableDontExistExceptions();
-            // Check if new table exist
-            if (Tables.ContainsKey(NewTableName))
-                throw new TableAlreadyExistExceptions();
-            // Rename Table
-            Tables.Add(NewTableName, Tables[OldTableName]);
-            Tables.Remove(OldTableName);
-            Tables[NewTableName].Name = NewTableName;
+            return _tables.ContainsKey(name);
+        }
+
+        public Table CreateTable(string name)
+        {
+            ValidateName(name, nameof(name));
+            if (_tables.ContainsKey(name))
+                throw new TableAlreadyExistExceptions(name);
+
+            Table table = new Table(name) { Database = this };
+            _tables.Add(name, table);
+            MarkChanged();
+            return table;
+        }
+
+        public FastDatabase RemoveTable(string name)
+        {
+            if (!_tables.Remove(name))
+                throw new TableDontExistExceptions(name);
+
+            MarkChanged();
             return this;
         }
 
-        /// <summary>
-        /// Insert some data into this database
-        /// </summary>
-        /// <param name="TableName">The name of the table to insert data</param>
-        /// <param name="Values">the data values to insert (must match with the table definition's fields)</param>
-        /// <returns>true if success, false if table don't exist OR values mismatch the fields</returns>
-        public void Insert(string TableName, params object[] Values)
+        public Table GetTable(string name)
         {
-            // insert data values
-            GetTable(TableName).Insert(Values);
+            if (!_tables.TryGetValue(name, out Table table))
+                throw new TableDontExistExceptions(name);
+            return table;
         }
 
-        /// <summary>
-        /// Insert some data into this database
-        /// </summary>
-        /// <param name="TableName">The name of the table to insert data</param>
-        /// <param name="Values">the data values to insert (must match with the table definition's fields)</param>
-        /// <returns>true if success, false if table don't exist OR values mismatch the fields</returns>
-        public void Insert(string TableName, Dictionary<string, object> Values)
+        public bool TryGetTable(string name, out Table table)
         {
-            // insert data values
-            GetTable(TableName).Insert(Values);
+            return _tables.TryGetValue(name, out table);
         }
 
-        /// <summary>
-        /// Did this database Exist ?
-        /// </summary>
-        /// <returns></returns>
+        public FastDatabase RenameTable(string oldTableName, string newTableName)
+        {
+            ValidateName(newTableName, nameof(newTableName));
+            if (!_tables.TryGetValue(oldTableName, out Table table))
+                throw new TableDontExistExceptions(oldTableName);
+            if (_tables.ContainsKey(newTableName))
+                throw new TableAlreadyExistExceptions(newTableName);
+
+            _tables.Remove(oldTableName);
+            table.Name = newTableName;
+            _tables.Add(newTableName, table);
+            MarkChanged();
+            return this;
+        }
+
+        public bool Insert(string tableName, params object[] values)
+        {
+            return GetTable(tableName).Insert(values);
+        }
+
+        public bool Insert(string tableName, Dictionary<string, object> values)
+        {
+            return GetTable(tableName).Insert(values);
+        }
+
+        public bool Insert(string tableName, IDictionary<string, object> values)
+        {
+            return GetTable(tableName).Insert(values);
+        }
+
         public bool Exists()
         {
-            return File.Exists(Path.Combine(FilePath, DatabaseName + ".FastDB"));
+            return File.Exists(FullPath);
         }
 
-        /// <summary>
-        /// Close this DB
-        /// </summary>
+        public void Batch(Action<FastDatabase> action, bool saveWhenDone = false)
+        {
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
+            bool previousBatching = _batching;
+            _batching = true;
+            try
+            {
+                action(this);
+            }
+            finally
+            {
+                _batching = previousBatching;
+            }
+
+            if (!previousBatching && (saveWhenDone || (AutoSave && _dirtyDuringBatch)))
+                Save();
+        }
+
+        public void ExportJson(string path, bool indented = true)
+        {
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
+
+            JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = indented };
+            DatabaseDto dto = ToDto();
+            File.WriteAllText(path, JsonSerializer.Serialize(dto, options));
+        }
+
+        public static FastDatabase ImportJson(string path, string databaseName, string filePath)
+        {
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
+
+            DatabaseDto dto = JsonSerializer.Deserialize<DatabaseDto>(File.ReadAllText(path));
+            if (dto == null)
+                throw new InvalidDataException("Invalid FastDB JSON file.");
+
+            FastDatabase database = new FastDatabase(databaseName, filePath);
+            database.LoadFromDto(dto);
+            database.IsDirty = true;
+            return database;
+        }
+
+        public void ImportJsonInto(string path, bool clearExisting = true)
+        {
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
+
+            DatabaseDto dto = JsonSerializer.Deserialize<DatabaseDto>(File.ReadAllText(path));
+            if (dto == null)
+                throw new InvalidDataException("Invalid FastDB JSON file.");
+
+            if (clearExisting)
+                _tables.Clear();
+            LoadFromDto(dto);
+            MarkChanged();
+        }
+
         public void Close()
         {
-            Tables.Clear();
-            Tables = null;
-            DatabaseName = null;
-            FilePath = null;
+            _tables.Clear();
+            IsDirty = false;
         }
 
-        #region Serialization
-        internal override int GetSize()
+        internal IEnumerable<Table> GetTablesInOrder()
         {
-            return 4; //  nbTables
+            return _tables.Values;
         }
 
-        internal override unsafe void Serialize()
+        internal void AddLoadedTable(Table table)
         {
-            WriteInt(Tables.Count);
+            table.FinishLoading(this);
+            _tables.Add(table.Name, table);
         }
 
-        internal override unsafe void Deserialize()
+        internal void MarkChanged()
         {
-            Tables = new Dictionary<string, Table>();
+            IsDirty = true;
+            if (_batching)
+            {
+                _dirtyDuringBatch = true;
+                return;
+            }
+
+            if (AutoSave)
+                Save();
         }
-        #endregion
+
+        private DatabaseDto ToDto()
+        {
+            return new DatabaseDto
+            {
+                Name = DatabaseName,
+                Tables = _tables.Values.Select(table => new TableDto
+                {
+                    Name = table.Name,
+                    Fields = table.FieldDefinitions.Select(field => new FieldDto
+                    {
+                        Name = field.Name,
+                        Type = field.Type.ToString(),
+                        DefaultValue = Table.FormatValue(field.DefaultValue, field.Type)
+                    }).ToList(),
+                    Indexes = table.GetIndexSnapshots().Select(index => new IndexDto
+                    {
+                        FieldName = index.FieldName,
+                        Unique = index.Unique
+                    }).ToList(),
+                    Rows = table.Rows.Select(row =>
+                    {
+                        Dictionary<string, string> values = new Dictionary<string, string>(StringComparer.Ordinal);
+                        foreach (Field field in table.FieldDefinitions)
+                            values[field.Name] = Table.FormatValue(row.Get(field.FieldIndex), field.Type);
+                        return values;
+                    }).ToList()
+                }).ToList()
+            };
+        }
+
+        private void LoadFromDto(DatabaseDto dto)
+        {
+            foreach (TableDto tableDto in dto.Tables ?? new List<TableDto>())
+            {
+                Table table = CreateTable(tableDto.Name);
+                foreach (FieldDto fieldDto in tableDto.Fields ?? new List<FieldDto>())
+                {
+                    FastDBType type = ParseType(fieldDto.Type);
+                    table.AddField(fieldDto.Name, type, Table.ParseExternalValue(fieldDto.DefaultValue, type));
+                }
+
+                foreach (Dictionary<string, string> rowDto in tableDto.Rows ?? new List<Dictionary<string, string>>())
+                {
+                    Dictionary<string, object> row = new Dictionary<string, object>(StringComparer.Ordinal);
+                    foreach (Field field in table.FieldDefinitions)
+                    {
+                        if (rowDto.TryGetValue(field.Name, out string value))
+                            row[field.Name] = Table.ParseExternalValue(value, field.Type);
+                    }
+                    table.Insert(row);
+                }
+
+                foreach (IndexDto indexDto in tableDto.Indexes ?? new List<IndexDto>())
+                    table.CreateIndex(indexDto.FieldName, indexDto.Unique);
+            }
+        }
+
+        private static FastDBType ParseType(string value)
+        {
+            if (Enum.TryParse(value, ignoreCase: true, out FastDBType type))
+                return type;
+            throw new InvalidDataException("Unknown FastDBType '" + value + "'.");
+        }
+
+        private static void ValidateName(string value, string paramName)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("Name cannot be empty.", paramName);
+        }
+
+        private sealed class DatabaseDto
+        {
+            public string Name { get; set; }
+            public List<TableDto> Tables { get; set; }
+        }
+
+        private sealed class TableDto
+        {
+            public string Name { get; set; }
+            public List<FieldDto> Fields { get; set; }
+            public List<IndexDto> Indexes { get; set; }
+            public List<Dictionary<string, string>> Rows { get; set; }
+        }
+
+        private sealed class FieldDto
+        {
+            public string Name { get; set; }
+            public string Type { get; set; }
+            public string DefaultValue { get; set; }
+        }
+
+        private sealed class IndexDto
+        {
+            public string FieldName { get; set; }
+            public bool Unique { get; set; }
+        }
     }
 }
 

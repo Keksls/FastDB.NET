@@ -1,46 +1,30 @@
-﻿using System;
+using System;
 
 namespace FastDB.NET
 {
-    public struct Field
+    public sealed class Field
     {
-        public string Name { get; set; }
-        public FastDBType Type { get; set; }
-        public object DefaultValue { get; set; }
-        public int FieldIndex { get; set; }
+        public string Name { get; internal set; }
+        public FastDBType Type { get; }
+        private object _defaultValue;
+        public object DefaultValue
+        {
+            get { return _defaultValue; }
+            set { _defaultValue = Table.NormalizeValue(Type, value, allowNull: true) ?? Table.GetDefaultValue(Type); }
+        }
+        public int FieldIndex { get; internal set; }
 
         public Field(string name, FastDBType type, object defaultValue, int fieldIndex)
         {
-            Name = name;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
             Type = type;
             FieldIndex = fieldIndex;
             DefaultValue = defaultValue;
-            if (DefaultValue == null)
-                switch (type)
-                {
-                    case FastDBType.String:
-                        DefaultValue = "";
-                        break;
-                    case FastDBType.Integer:
-                        DefaultValue = 0;
-                        break;
-                    case FastDBType.Float:
-                        DefaultValue = 0f;
-                        break;
-                    case FastDBType.Bool:
-                        DefaultValue = false;
-                        break;
-                    case FastDBType.DateTime:
-                        DefaultValue = DateTime.Now;
-                        break;
-                    default:
-                        break;
-                }
         }
 
         public override string ToString()
         {
-            return Name + " (" + Type + ") - [" + DefaultValue + "]";
+            return Name + " (" + Type + ") - [" + (DefaultValue ?? "null") + "]";
         }
     }
 }

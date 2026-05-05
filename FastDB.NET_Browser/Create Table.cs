@@ -190,10 +190,10 @@ namespace FastDB.NET_Browser
                         dgFields.Rows[e.RowIndex].Cells[2] = colbool;
                         break;
                     case FastDBType.ByteArray:
-                        DataGridViewCheckBoxCell colba = new DataGridViewCheckBoxCell();
-                        colba.ValueType = typeof(byte[]);
-                        field.DefaultValue = "";
-                        colba.Value = (byte[])field.DefaultValue;
+                        DataGridViewTextBoxCell colba = new DataGridViewTextBoxCell();
+                        colba.ValueType = typeof(string);
+                        field.DefaultValue = Array.Empty<byte>();
+                        colba.Value = "";
                         dgFields.Rows[e.RowIndex].Cells[2] = colba;
                         break;
                     case FastDBType.DateTime:
