@@ -585,6 +585,8 @@ namespace FastDB.NET_Browser
                 textColumn.ElementStyle = new Style(typeof(TextBlock), (Style)FindResource(typeof(TextBlock)));
                 textColumn.ElementStyle.Setters.Add(new Setter(TextBlock.TextTrimmingProperty, System.Windows.TextTrimming.CharacterEllipsis));
                 textColumn.ElementStyle.Setters.Add(new Setter(TextBlock.PaddingProperty, new Thickness(6, 0, 6, 0)));
+                textColumn.ElementStyle.Setters.Add(new Setter(TextBlock.ForegroundProperty, FindResource("GridTextBrush")));
+                textColumn.ElementStyle.Setters.Add(new Setter(TextBlock.FontWeightProperty, FontWeights.Normal));
                 textColumn.EditingElementStyle = new Style(typeof(TextBox), (Style)FindResource(typeof(TextBox)));
                 textColumn.EditingElementStyle.Setters.Add(new Setter(TextBox.PaddingProperty, new Thickness(6, 3, 6, 3)));
             }
@@ -859,12 +861,14 @@ namespace FastDB.NET_Browser
         {
             public string Name { get; }
             public int Rows { get; }
+            public string RowsText { get; }
             public int Fields { get; }
 
             public TableItem(string name, int rows, int fields)
             {
                 Name = name;
                 Rows = rows;
+                RowsText = rows.ToString("N0", CultureInfo.InvariantCulture);
                 Fields = fields;
             }
         }

@@ -7,30 +7,32 @@
         MinWidth="1120"
         MinHeight="720"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource AppBrush}">
+        Background="{StaticResource AppBrush}"
+        FontFamily="Segoe UI"
+        FontSize="13">
     <DockPanel>
-        <Border DockPanel.Dock="Top" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,0,1" Padding="18,13">
+        <Border DockPanel.Dock="Top" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,0,1" Padding="18,12,18,5">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="FastDB" FontSize="24" FontWeight="Bold" Foreground="{StaticResource InkBrush}" VerticalAlignment="Center" />
-                    <TextBlock Text="Browser" FontSize="24" Margin="7,0,0,0" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" />
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,3,18,7">
+                    <TextBlock Text="FastDB" FontSize="22" FontWeight="Bold" Foreground="{StaticResource InkBrush}" VerticalAlignment="Center" />
+                    <TextBlock Text="Browser" FontSize="22" Margin="7,0,0,0" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" />
                     <Border Background="{StaticResource AccentSoftBrush}" CornerRadius="6" Margin="14,0,0,0" Padding="10,4">
                         <TextBlock x:Name="DatabaseBadge" Text="No database" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" />
                     </Border>
                     <TextBlock x:Name="DatabasePathText" Margin="14,0,0,0" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="520" />
                 </StackPanel>
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <WrapPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" MaxWidth="620">
                     <Button Content="New" Click="NewDatabase_Click" />
                     <Button Content="Open" Click="OpenDatabase_Click" />
                     <Button Content="Save" Style="{StaticResource PrimaryButton}" Click="SaveDatabase_Click" />
                     <Button Content="Save As" Click="SaveAsDatabase_Click" />
                     <Button Content="Lock" Click="LockDatabase_Click" />
-                    <Button Content="Unlock" Click="UnlockDatabase_Click" Margin="0" />
-                </StackPanel>
+                    <Button Content="Unlock" Click="UnlockDatabase_Click" />
+                </WrapPanel>
             </Grid>
         </Border>
 
@@ -53,7 +55,7 @@
             <Border Grid.Column="0" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,1,0">
                 <DockPanel Margin="16">
                     <StackPanel DockPanel.Dock="Top">
-                        <TextBlock Text="Tables" FontWeight="Bold" FontSize="16" Foreground="{StaticResource InkBrush}" />
+                        <TextBlock Text="Tables" FontWeight="Bold" FontSize="15" Foreground="{StaticResource InkBrush}" />
                         <TextBlock Text="Schema and row explorer" Margin="0,4,0,0" Foreground="{StaticResource MutedBrush}" />
                         <TextBox x:Name="TableSearchBox" Margin="0,14,0,12" TextChanged="TableSearchBox_TextChanged" />
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
@@ -82,7 +84,7 @@
                                         </TextBlock>
                                     </StackPanel>
                                     <Border Grid.Column="1" Background="{StaticResource SurfaceAltBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="8" Padding="8,3" VerticalAlignment="Center" Margin="8,0,0,0">
-                                        <TextBlock Text="{Binding Rows, Mode=OneWay}" Foreground="{StaticResource AccentBrush}" FontSize="12" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding RowsText, Mode=OneWay}" Foreground="{StaticResource MutedBrush}" FontSize="12" FontWeight="SemiBold" />
                                     </Border>
                                 </Grid>
                             </DataTemplate>
@@ -104,13 +106,13 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel>
-                            <TextBlock x:Name="SelectedTableTitle" Text="Select a table" FontSize="24" FontWeight="Bold" Foreground="{StaticResource InkBrush}" />
+                            <TextBlock x:Name="SelectedTableTitle" Text="Select a table" FontSize="22" FontWeight="Bold" Foreground="{StaticResource InkBrush}" />
                             <TextBlock x:Name="SelectedTableSubtitle" Text="Open or create a database to begin." Margin="0,4,0,0" Foreground="{StaticResource MutedBrush}" />
                         </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <WrapPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" MaxWidth="360">
                             <Button Content="Refresh" Click="Refresh_Click" />
-                            <Button Content="Apply edits" Style="{StaticResource PrimaryButton}" Click="ApplyPageEdits_Click" Margin="0" />
-                        </StackPanel>
+                            <Button Content="Apply edits" Style="{StaticResource PrimaryButton}" Click="ApplyPageEdits_Click" />
+                        </WrapPanel>
                     </Grid>
                 </Border>
 
